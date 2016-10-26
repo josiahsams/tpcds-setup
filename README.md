@@ -5,7 +5,9 @@
 1. Spark 1.6.1 should be installed and SPARK_HOME should be set in the environment variable.
 2. HADOOP YARN Setup should be completed and HADOOP_HOME should be set in the environment variable.
 3. Make sure the nodes are set for password-less SSH both ways(master->slaves & slaves->master).
-
+4. Since we use the environment variables a lot in our scripts, make sure to comment out the portion following this statement in your ~/.bashrc ,
+  `If not running interactively, don't do anything`
+ 
 ###Steps to run TPC-DS Benchmark:
 
 1. Download and build the Databricks TPC-DS benchmark package
@@ -98,7 +100,7 @@
 
 5. Take copy of the `tpcds_conf/`, `tpcds_queries/` and `tpcds_utils` directory and place it under `WORKDIR` directory.
 
-  *Note*: `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc.
+  *Note* : `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc. Al
    
 6. Download jmeter version 2.13 from the below link,
    
@@ -127,7 +129,7 @@
   run_single.sh q19 15 30 30g 2048 200 9
   ```
 
-      *Note*: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19_baidu_tuned_2.sql` with other parameters.
+      *Note* : Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19_baidu_tuned_2.sql` with other parameters.
    
     b. run throughput test by invoking jmeter inside the script,
     
@@ -135,7 +137,7 @@
   run_throughput_with_jmeter_nm.sh
   ```
 
-      *Note*: Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
+      *Note* : Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
 
 
 
