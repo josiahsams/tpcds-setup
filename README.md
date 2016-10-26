@@ -4,6 +4,7 @@
 
 1. Spark 1.6.1 should be installed and SPARK_HOME should be set in the environment variable.
 2. HADOOP YARN Setup should be completed and HADOOP_HOME should be set in the environment variable.
+3. Make sure the nodes are set for password-less SSH both ways(master->slaves & slaves->master).
 
 ###Steps to run TPC-DS Benchmark:
 
