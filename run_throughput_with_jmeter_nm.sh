@@ -18,7 +18,7 @@ cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && ech
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HOST=pcloud1.austin.ibm.com
-USER=baidu
+USER=joe
 PASSWD=passw0rd
 
 JMX=${WORKDIR}/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx
@@ -29,7 +29,7 @@ sed "s~SRCPATH~${DIR}~g; s~HOST~${HOST}~g; s~USER~${USER}~g; s~PASSWD~${PASSWD}~
 # CUR_NMON_DIR=${NMON_DIR}/${PREFIX}_${SEQ}_nmon_logs
 # startnmon.sh $CUR_NMON_DIR
 
-/usr/bin/time  ${JEMTER_BIN} -n -t ${JMX_IN_USE} -l ${LOG_DIR}/run1.jtl -j ${LOG_DIR}/run1.log
+/usr/bin/time  ${JMETER_BIN} -n -t ${JMX_IN_USE} -l ${LOG_DIR}/run1.jtl -j ${LOG_DIR}/run1.log
 
 # stopnmon.sh $CUR_NMON_DIR
 

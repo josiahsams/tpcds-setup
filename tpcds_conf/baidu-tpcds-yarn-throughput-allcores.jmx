@@ -29,76 +29,76 @@
           <stringProp name="TestPlan.comments">One master per thread</stringProp>
         </SwitchController>
         <hashTree>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q19_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q19" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q19_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q19 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q43_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q43" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q43_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q43 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q63_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q63" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q63_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q63 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q42_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q42" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q42_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q42 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q52_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q52" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q52_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q52 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q55_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q55" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q55_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q55 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q68_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q68" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q68_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q68 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q73_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q73" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q73_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q73 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
-          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q98_USER_tuned_2" enabled="true">
+          <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q98" enabled="true">
             <stringProp name="hostname">HOST</stringProp>
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q98_USER_tuned_2 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q98 </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
         </hashTree>

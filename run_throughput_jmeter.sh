@@ -1,9 +1,11 @@
 #!/bin/bash
 
- if [ $# -ne 1]; then
+ if [ $# -ne 1 ]; then
      echo "Usage: $0 <query name>"
      exit
  fi
+
+# WORKDIR=`grep WORKDIR ~/.bashrc | awk -F'=' '{print \$2}'`
 
 ${WORKDIR?"Need to set WORKDIR env"} 2>/dev/null
 
