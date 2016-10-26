@@ -22,7 +22,7 @@ size_in_mb=$2
 SCRIPT=${WORKDIR}/tpcds_utils/genData.scala
 SCRIPT_TO_EXECUTE=${WORKDIR}/tpcds_utils/genData.scala.$$
 
-sed "s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_MB =.*~SIZE_IN_MB = ${size_in_mb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}
+sed "s~KIT_PATH =.*~KIT_PATH = ${KIT_PATH}~g; s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_MB =.*~SIZE_IN_MB = ${size_in_mb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}
 
 # Below parameters will be initialized from run.config and can be overriden here
 DRIVER_MEM=30g
