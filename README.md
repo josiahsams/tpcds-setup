@@ -7,10 +7,23 @@
 3. Make sure the nodes are set for password-less SSH both ways(master->slaves & slaves->master).
 4. Since we use the environment variables a lot in our scripts, make sure to comment out the portion following this statement in your ~/.bashrc ,
   `If not running interactively, don't do anything`
+5. Kindly refer to the setups & scripts provided in https://github.com/kmadhugit/hadoop-cluster-utils before proceeding further as the utility scripts provided in the repository are needed here.
  
 ###Steps to run TPC-DS Benchmark:
 
-1. Download and build the Databricks TPC-DS benchmark package
+1. Clone this repository and follow the steps before proceeding.
+
+  ```bash
+  curpwd=`pwd`
+  export WORKDIR=${curpwd}
+  echo "export WORKDIR=${curpwd}" >> ~/.bashrc
+  git clone https://github.com/josiahsams/tpcds-setup
+  echo "export PATH=$PATH:${WORKDIR}/tpcds-setup" >> ~/.bashrc
+  ```
+
+    Note: `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc. 
+    
+2. Download and build the Databricks TPC-DS benchmark package
 
   The version to be used is 0.3.2, which is good for Spark 1.6.1. First the github repository from https://github.com/databricks/spark-sql-perf and checkout the 0.3.2 version and proceed to build.
   
@@ -20,24 +33,35 @@
   export DBC_USERNAME=root
   cd ./spark-sql-perf-0.3.2
   ./build/sbt clean package
+  ls ./target/scala-2.10/*.jar
   ```
-  If the build succeeds you will see a jar (in ./target directory) created. You need this jar later to run the benchmark.
+  If the build succeeds you will see a jar (in ./target/scala-2.10/ directory) created. You need this jar's absolute path (SQLPERF_JAR) later to run the benchmark. Refer step 8.
   
-2. Download and build the TPC-DS datagen kit
+3. Download and build the TPC-DS datagen kit. You need this to generate the TPC-DS raw data. 
 
   ```
+    cd ${WORKDIR}
     git clone https://github.com/davies/tpcds-kit.git
     cd ./tpcds-kit/tools
     cp Makefile.suite Makefile
     make
   ```
-
-  You need this to generate the TPC-DS raw data. 
-  Then copy the tpcds-kit to all the nodes and place it in the same directory, and grand read and write permissions to all users (chmod –R a+rx <tpcds-kit dir>)
-
-3. Install `mysql` and make `mysql` to manage the HIVE metastore instead the default `derby` so that multiple connections can be made access the HIVE Database parallelly.
   
-    a. Install the following packages in Ubuntu:
+  Then copy the tpcds-kit to all the nodes and place it in the same directory, and grand read and write permissions to all users (chmod –R a+rx <tpcds-kit dir>)
+  
+  ```
+    cd ${WORKDIR}
+    tar cf tpcds-kit.tar ./tpcds-kit
+    CP ${WORKDIR}/tpcds-kit.tar ${WORKDIR}/tpcds-kit.tar 
+    DN "tar xvf ${WORKDIR}/tpcds-kit.tar"
+    AN "chmod –R a+rx ${WORKDIR}/tpcds-kit"
+  ```
+
+4. Install `mysql` and make `mysql` to manage the HIVE metastore instead the default `derby` so that multiple connections can be made access the HIVE Database parallelly.
+  
+    a. Install the following packages in Ubuntu. 
+    
+    Note: During the installation of mysql-server, you'll be prompted to create a root password. We need this password to create database later in this process.
   
   ```
     sudo apt-get update
@@ -46,15 +70,13 @@
     sudo apt-get install libmysql-java
   ```
 
-    b. set root password (mysql root)
-
-    c. Confirm the connector jar file is found under:
+    b. Confirm the connector jar file is found under:
   
   ```
      ls -lt /usr/share/java/mysql-connector-java.jar
   ```
 
-    d. Create metastore_db to store all the HIVE Catalogs & Schema definitions.
+    c. Create metastore_db to store all the HIVE Catalogs & Schema definitions.
  
   ```
   mysql -u root -p
@@ -64,14 +86,20 @@
   mysql>  flush privileges;
   ```
 
-    e. Confirm `mysql` services are up and runnning. If not restart the service.
+    d. Confirm `mysql` services are up and runnning. If not restart the service.
 
   ```
     sudo netstat -tap | grep mysql
     sudo systemctl restart mysql.service
   ```
 
-4. Create a file `hive-site.xml` under ${SPARK_HOME}/conf/, if not found. Make similar changes as follows so that spark uses the mysql DB for HIVE metastore information for SQLContext based queries,
+5. Create a file `hive-site.xml` under ${SPARK_HOME}/conf/, if not found. Make similar changes as follows so that spark uses the mysql DB for HIVE metastore information for SQLContext based queries,
+
+  ```bash
+    vi ${SPARK_HOME}/conf/hive-site.xml
+  ```
+  
+    Copy the below content into the file.
 
   ```xml
     <configuration>
@@ -98,30 +126,42 @@
     </configuration>
   ```
 
-5. Take copy of the `tpcds_conf/`, `tpcds_queries/` and `tpcds_utils` directory and place it under `WORKDIR` directory.
+6. Take copy of the `tpcds_conf/`, `tpcds_queries/` and `tpcds_utils` directory and place it under `WORKDIR` directory.
 
-  *Note* : `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc. Al
+  ```
+  cp -r tpcds_conf/ ${WORKDIR}/
+  cp -r tpcds_queries/ ${WORKDIR}/
+  cp -r tpcds_utils/ ${WORKDIR}/
+  
+  ```
    
-6. Download jmeter version 2.13 from the below link,
+7. Download jmeter version 2.13 from the below link,
    
+   ```
+      cd ${WORKDIR}
       wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-2.13.tgz
+      tar zxf apache-jmeter-2.13.tgz
+   ```
 
+   Set JMETER_PATH to the downloaded absolute path. Refer Step 8.
    
-7. Config the ${WORKDIR}/tpcds_conf/run.config file before running tpcds benchmark scripts,
+8. Config the ${WORKDIR}/tpcds_conf/run.config file before running tpcds benchmark scripts,
+
+   ```
+   export LOG_DIR=${WORKDIR}/tpcds_logs
+   export QUERIES_DIR=${WORKDIR}/tpcds_queries
+   export JMETER_PATH=${WORKDIR}/apache-jmeter-2.13/bin/jmeter
+   export SQLPERF_JAR=${WORKDIR}/spark-sql-perf/target/scala-2.10/spark-sql-perf_2.10-0.3.2.jar
+   ```
    
-   SET LOG_DIR
-   SET TEST_SCRIPTS_DIR
-   SET JMETER_PATH
-   SET SQLPERF_JAR
-   
-8. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
+9. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
 
   ```
     genData.sh <hdfs_name> <size_in_mb>
     createDB.sh <hdfs_name> <size_in_mb> <db_name>
   ```
 
-9. There are 2 types of tpcds benchmark script provided,
+10. There are 2 types of tpcds benchmark script provided,
    
     a. To run one sql query at a time and to get the execution time invoke `run_single.sh` script as follows,
     
@@ -129,7 +169,7 @@
   run_single.sh q19 15 30 30g 2048 200 9
   ```
 
-      *Note* : Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19_baidu_tuned_2.sql` with other parameters.
+      Note: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19_baidu_tuned_2.sql` with other parameters.
    
     b. run throughput test by invoking jmeter inside the script,
     
@@ -137,7 +177,7 @@
   run_throughput_with_jmeter_nm.sh
   ```
 
-      *Note* : Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
+      Note: Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
 
 
 
