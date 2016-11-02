@@ -12,16 +12,18 @@
 ###Steps to run TPC-DS Benchmark:
 
 1. Clone this repository and follow the steps before proceeding.
+    Note: `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc. 
 
   ```bash
-  curpwd=`pwd`
-  export WORKDIR=${curpwd}
-  echo "export WORKDIR=${curpwd}" >> ~/.bashrc
   git clone https://github.com/josiahsams/tpcds-setup
-  echo "export PATH=$PATH:${WORKDIR}/tpcds-setup" >> ~/.bashrc
+  #Update PATH and WORKDIR in .bashrc
+  vi ~/.bashrc
+  G
+  export WORKDIR=${HOME}
+  export PATH=$PATH:${WORKDIR}/tpcds-setup
+  . ~/.bashrc  
   ```
 
-    Note: `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc. 
     
 2. Download and build the Databricks TPC-DS benchmark package
 
@@ -29,9 +31,9 @@
   
   ```
   git clone https://github.com/databricks/spark-sql-perf.git
-  git checkout -b v0.3.2 v0.3.2
-  export DBC_USERNAME=root
   cd ./spark-sql-perf-0.3.2
+  git checkout -b v0.3.2 v0.3.2
+  export DBC_USERNAME=`whoami`
   ./build/sbt clean package
   ls ./target/scala-2.10/*.jar
   ```
@@ -54,7 +56,7 @@
     tar cf tpcds-kit.tar ./tpcds-kit
     CP ${WORKDIR}/tpcds-kit.tar ${WORKDIR}/tpcds-kit.tar 
     DN "tar xvf ${WORKDIR}/tpcds-kit.tar"
-    AN "chmod –R a+rx ${WORKDIR}/tpcds-kit"
+    AN "chmod -R a+rx ${WORKDIR}/tpcds-kit"
   ```
 
 4. Install `mysql` and make `mysql` to manage the HIVE metastore instead the default `derby` so that multiple connections can be made access the HIVE Database parallelly.
