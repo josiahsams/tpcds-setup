@@ -20,8 +20,8 @@ hdfs_path=$1
 size_in_mb=$2
 db_name=$3
 
-SCRIPT=${WORKDIR}/tpcds_utils/genData.scala
-SCRIPT_TO_EXECUTE=${WORKDIR}/tpcds_utils/genData.scala.$$
+SCRIPT=${WORKDIR}/tpcds_utils/createDB.scala
+SCRIPT_TO_EXECUTE=${WORKDIR}/tpcds_utils/createDB.scala.$$
 
 sed "s~KIT_PATH =.*~KIT_PATH = ${KIT_PATH}~g; s~DBNAME = .*~DBNAME = \"${db_name}\"~g ; s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_MB =.*~SIZE_IN_MB = ${size_in_mb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}
 
