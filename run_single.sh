@@ -7,7 +7,7 @@ fi
 
 ${WORKDIR?"Need to set WORKDIR env"} 2>/dev/null
 
-RUNCONF=${WORKDIR}/tpcds_conf/run.config
+RUNCONF=${WORKDIR}/tpcds-setup/tpcds_conf/run.config
 
 if [ ! -f ${RUNCONF} ]; then
     echo "File : ${RUNCONF} not found!"

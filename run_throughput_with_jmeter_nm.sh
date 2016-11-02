@@ -2,7 +2,7 @@
 
 ${WORKDIR?"Need to set WORKDIR env"} 2>/dev/null
 
-RUNCONF=${WORKDIR}/tpcds_conf/run.config
+RUNCONF=${WORKDIR}/tpcds-setup/tpcds_conf/run.config
 
 if [ ! -f ${RUNCONF} ]; then
     echo "File : ${RUNCONF} not found!"
@@ -21,8 +21,8 @@ HOST=pcloud1.austin.ibm.com
 USER=joe
 PASSWD=passw0rd
 
-JMX=${WORKDIR}/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx
-JMX_IN_USE=${WORKDIR}/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx.$$
+JMX=${WORKDIR}/tpcds-setup/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx
+JMX_IN_USE=${WORKDIR}/tpcds-setup/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx.$$
 
 sed "s~SRCPATH~${DIR}~g; s~HOST~${HOST}~g; s~USER~${USER}~g; s~PASSWD~${PASSWD}~g" $JMX > $JMX_IN_USE
 
