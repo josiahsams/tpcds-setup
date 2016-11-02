@@ -78,13 +78,25 @@
      ls -lt /usr/share/java/mysql-connector-java.jar
   ```
 
-    c. Create metastore_db to store all the HIVE Catalogs & Schema definitions.
- 
+    c. Create metastore_db to store all the HIVE Catalogs & Schema definitions if not already exists.
+    
+      To list all the database, run the command and check metatstore_db exists,
+    
+  ```mysql
+  mysql> show databases;
   ```
+      
+      To list all users, run the command and check for `hive` user
+    
+  ```mysql
+  mysql> select user from mysql.user;
+  ```
+ 
+  ```mysql
   mysql -u root -p
   mysql> CREATE DATABASE metastore_db;
-  mysql> CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'hivepassword';
-  mysql> GRANT all on *.* to 'hiveuser'@localhost identified by 'hivepassword';
+  mysql> CREATE USER 'hive'@'%' IDENTIFIED BY 'hivepassword';
+  mysql> GRANT all on *.* to 'hive'@localhost identified by 'hivepassword';
   mysql>  flush privileges;
   ```
 
