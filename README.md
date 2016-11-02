@@ -30,8 +30,8 @@
   The version to be used is 0.3.2, which is good for Spark 1.6.1. First the github repository from https://github.com/databricks/spark-sql-perf and checkout the 0.3.2 version and proceed to build.
   
   ```
-  git clone https://github.com/databricks/spark-sql-perf.git
-  cd ./spark-sql-perf-0.3.2
+  git clone https://github.com/josiahsams/spark-sql-perf 
+  cd ./spark-sql-perf
   git checkout -b v0.3.2 v0.3.2
   export DBC_USERNAME=`whoami`
   ./build/sbt clean package
@@ -78,34 +78,40 @@
      ls -lt /usr/share/java/mysql-connector-java.jar
   ```
 
-    c. Create metastore_db to store all the HIVE Catalogs & Schema definitions if not already exists.
-    
-      To list all the database, run the command and check metatstore_db exists,
-    
-  ```mysql
-  mysql> show databases;
-  ```
-      
-      To list all users, run the command and check for `hive` user
-    
-  ```mysql
-  mysql> select user from mysql.user;
-  ```
- 
-  ```mysql
-  mysql -u root -p
-  mysql> CREATE DATABASE metastore_db;
-  mysql> CREATE USER 'hive'@'%' IDENTIFIED BY 'hivepassword';
-  mysql> GRANT all on *.* to 'hive'@localhost identified by 'hivepassword';
-  mysql>  flush privileges;
-  ```
-
-    d. Confirm `mysql` services are up and runnning. If not restart the service.
+    c. Confirm `mysql` services are up and runnning. If not restart the service.
 
   ```
     sudo netstat -tap | grep mysql
     sudo systemctl restart mysql.service
   ```
+
+    d. Create a new user in mysql for Hive.Hive will create a database and store external table definitions in this database.
+    
+      Check for user name conflits - list all users.
+    
+      ```mysql
+      select user from mysql.user;
+      ```
+      To list all the database, run the below command.
+    
+      ```mysql
+      show databases;
+      ```
+   
+      login via mysql root(not unix root) to create new user.
+ 
+  ```mysql
+  mysql -u root -p
+  mysql> CREATE USER 'hive'@'%' IDENTIFIED BY 'hivepassword';
+  mysql> GRANT all on *.* to 'hive'@localhost identified by 'hivepassword';
+  mysql>  flush privileges;
+  ```
+
+    e. Confirm new user created sucessfully.
+    
+    ```mysql
+    mysql -u hive -p 
+    ```
 
 5. Create a file `hive-site.xml` under ${SPARK_HOME}/conf/, if not found. Make similar changes as follows so that spark uses the mysql DB for HIVE metastore information for SQLContext based queries,
 
@@ -143,6 +149,7 @@
 6. Take copy of the `tpcds_conf/`, `tpcds_queries/` and `tpcds_utils` directory and place it under `WORKDIR` directory.
 
   ```
+  cd tpcds-setup
   cp -r tpcds_conf/ ${WORKDIR}/
   cp -r tpcds_queries/ ${WORKDIR}/
   cp -r tpcds_utils/ ${WORKDIR}/
@@ -171,8 +178,8 @@
 9. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
 
   ```
-    genData.sh <hdfs_name> <size_in_mb>
-    createDB.sh <hdfs_name> <size_in_mb> <db_name>
+    genData.sh hdfs://localhost[:port]/tpcds-xxx <size_in_mb>
+    createDB.sh hdfs://localhost[:port]/tpcds-xxx <size_in_mb> <db_name>
   ```
 
 10. There are 2 types of tpcds benchmark script provided,
