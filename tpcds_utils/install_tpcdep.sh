@@ -67,6 +67,8 @@ if [ ! -f ${JMETER_BIN} ]; then
     cp ${REPO_DIR}/tpcds_utils/jmeter-ssh-sampler-0.1.0.jar ${DEPSDIR}/apache-jmeter-2.13/lib/ext
     # Refer http://www.jcraft.com/jsch/index.html
     cp ${REPO_DIR}/tpcds_utils/jsch-0.1.54.jar ${DEPSDIR}/apache-jmeter-2.13/lib
+
+    sed -i '/^#jmeterengine.force.system.exit/s/^#//g' ${DEPSDIR}/apache-jmeter-2.13/bin/jmeter.properties
 fi
 
 
