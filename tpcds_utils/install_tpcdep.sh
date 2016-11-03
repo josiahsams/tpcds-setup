@@ -63,6 +63,10 @@ JMETER_BIN=${DEPSDIR}/apache-jmeter-2.13/bin/jmeter
 if [ ! -f ${JMETER_BIN} ]; then
     wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-2.13.tgz
     tar zxf apache-jmeter-2.13.tgz
+    # install jmeter-ssh-sampler. Refer https://code.google.com/archive/p/jmeter-ssh-sampler/downloads
+    cp ${REPO_DIR}/tpcds_utils/jmeter-ssh-sampler-0.1.0.jar ${DEPSDIR}/apache-jmeter-2.13/lib/ext
+    # Refer http://www.jcraft.com/jsch/index.html
+    cp ${REPO_DIR}/tpcds_utils/jsch-0.1.54.jar ${DEPSDIR}/apache-jmeter-2.13/lib
 fi
 
 

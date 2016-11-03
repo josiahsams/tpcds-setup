@@ -34,7 +34,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q19 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q19 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q43" enabled="true">
@@ -42,7 +42,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q43 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q43 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q63" enabled="true">
@@ -50,7 +50,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q63 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q63 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q42" enabled="true">
@@ -58,7 +58,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q42 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q42 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q52" enabled="true">
@@ -66,7 +66,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q52 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q52 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q55" enabled="true">
@@ -74,7 +74,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q55 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q55 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q68" enabled="true">
@@ -82,7 +82,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q68 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q68 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q73" enabled="true">
@@ -90,7 +90,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q73 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q73 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
           <org.apache.jmeter.protocol.ssh.sampler.SSHSampler guiclass="TestBeanGUI" testclass="org.apache.jmeter.protocol.ssh.sampler.SSHSampler" testname="q98" enabled="true">
@@ -98,7 +98,7 @@
             <intProp name="port">22</intProp>
             <stringProp name="username">USER</stringProp>
             <stringProp name="password">PASSWD</stringProp>
-            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q98 </stringProp>
+            <stringProp name="command">SRCPATH/run_throughput_jmeter.sh q98 DBNAME TIMEOUT </stringProp>
           </org.apache.jmeter.protocol.ssh.sampler.SSHSampler>
           <hashTree/>
         </hashTree>
