@@ -148,7 +148,7 @@
   run_single.sh q19 15 30 30g 2048 200 9 tpcds5G
   ```
 
-      Note: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19_baidu_tuned_2.sql` with other parameters.
+      Note: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19.sql` with other parameters.
    
     b. run throughput test by invoking jmeter inside the script,
     
