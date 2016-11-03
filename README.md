@@ -24,6 +24,13 @@
   # Install the TPC-DS Dependencies
   install_tpcdep.sh
   ```
+  
+  Note: install_tpcdep.sh will take care of the following
+  
+  - Download spark-sql-perf
+  - Download and install tpcds-kit
+  - Download and config apache-jmeter-2.13
+  
 
 2. Install `mysql` and make `mysql` to manage the HIVE metastore instead the default `derby` so that multiple connections can be made access the HIVE Database parallelly.
   
@@ -128,15 +135,17 @@
     
     eg:-
     # genData.sh hdfs://n001/tpcds-5GB 5
-    # createDB.sh hdfs://n001/tpcds-5GB 5 tpcds-5G
+    # createDB.sh hdfs://n001/tpcds-5GB 5 tpcds5G
   ```
+  
+    Note: Don't leave any hyphen/special characters for db_name.
 
 6. There are 2 types of tpcds benchmark script provided,
    
     a. To run one sql query at a time and to get the execution time invoke `run_single.sh` script as follows,
     
   ```
-  run_single.sh q19 15 30 30g 2048 200 9
+  run_single.sh q19 15 30 30g 2048 200 9 tpcds5G
   ```
 
       Note: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19_baidu_tuned_2.sql` with other parameters.
@@ -144,7 +153,7 @@
     b. run throughput test by invoking jmeter inside the script,
     
   ```   
-  run_throughput_with_jmeter_nm.sh
+  run_throughput_with_jmeter_nm.sh tpcds5G 200
   ```
 
       Note: Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
