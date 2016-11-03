@@ -68,7 +68,7 @@ if [ ! -f ${JMETER_BIN} ]; then
     # Refer http://www.jcraft.com/jsch/index.html
     cp ${REPO_DIR}/tpcds_utils/jsch-0.1.54.jar ${DEPSDIR}/apache-jmeter-2.13/lib
 
-    sed -i '/^#jmeterengine.force.system.exit/s/^#//g' ${DEPSDIR}/apache-jmeter-2.13/bin/jmeter.properties
+    sed -i '/^#jmeterengine.force.system.exit/s/^#jmeterengine.force.system.exit.*/jmeterengine.force.system.exit=true/g' ${DEPSDIR}/apache-jmeter-2.13/bin/jmeter.properties
 fi
 
 
