@@ -78,6 +78,12 @@
     ```mysql
     mysql -u hive -p 
     ```
+    
+    f. Add the mysql connector to the `${SPARK_HOME}/conf/spark-env.sh` file
+    
+    ```
+    export SPARK_CLASSPATH=/usr/share/java/mysql-connector-java.jar
+    ```
 
 3. Create a file `hive-site.xml` under ${SPARK_HOME}/conf/, if not found. Make similar changes as follows so that spark uses the mysql DB for HIVE metastore information for SQLContext based queries,
 
@@ -117,8 +123,12 @@
 5. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
 
   ```
-    genData.sh hdfs://localhost[:port]/tpcds-xxx <size_in_mb>
-    createDB.sh hdfs://localhost[:port]/tpcds-xxx <size_in_mb> <db_name>
+    genData.sh hdfs://localhost[:port]/tpcds-xxx <size_in_gb>
+    createDB.sh hdfs://localhost[:port]/tpcds-xxx <size_in_gb> <db_name>
+    
+    eg:-
+    # genData.sh hdfs://n001/tpcds-5GB 5
+    # createDB.sh hdfs://n001/tpcds-5GB 5 tpcds-5G
   ```
 
 6. There are 2 types of tpcds benchmark script provided,
