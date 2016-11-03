@@ -16,50 +16,16 @@
 
   ```bash
   git clone https://github.com/josiahsams/tpcds-setup
-  #Update PATH and WORKDIR in .bashrc
-  vi ~/.bashrc
-  G
+  #Add PATH and WORKDIR in .bashrc
   export WORKDIR=${HOME}
-  export PATH=$PATH:${WORKDIR}/tpcds-setup
+  export PATH=$PATH:${WORKDIR}/tpcds-setup:${WORKDIR}/tpcds-setup/tpcds_utils
   . ~/.bashrc  
+  
+  # Install the TPC-DS Dependencies
+  install_tpcdep.sh
   ```
 
-    
-2. Download and build the Databricks TPC-DS benchmark package
-
-  The version to be used is 0.3.2, which is good for Spark 1.6.1. First the github repository from https://github.com/databricks/spark-sql-perf and checkout the 0.3.2 version and proceed to build.
-  
-  ```
-  git clone https://github.com/josiahsams/spark-sql-perf 
-  cd ./spark-sql-perf
-  git checkout -b v0.3.2 v0.3.2
-  export DBC_USERNAME=`whoami`
-  ./build/sbt clean package
-  ls ./target/scala-2.10/*.jar
-  ```
-  If the build succeeds you will see a jar (in ./target/scala-2.10/ directory) created. You need this jar's absolute path (SQLPERF_JAR) later to run the benchmark. Refer step 8.
-  
-3. Download and build the TPC-DS datagen kit. You need this to generate the TPC-DS raw data. 
-
-  ```
-    cd ${WORKDIR}
-    git clone https://github.com/davies/tpcds-kit.git
-    cd ./tpcds-kit/tools
-    cp Makefile.suite Makefile
-    make
-  ```
-  
-  Then copy the tpcds-kit to all the nodes and place it in the same directory, and grand read and write permissions to all users (chmod –R a+rx <tpcds-kit dir>)
-  
-  ```
-    cd ${WORKDIR}
-    tar cf tpcds-kit.tar ./tpcds-kit
-    CP ${WORKDIR}/tpcds-kit.tar ${WORKDIR}/tpcds-kit.tar 
-    DN "tar xvf ${WORKDIR}/tpcds-kit.tar"
-    AN "chmod -R a+rx ${WORKDIR}/tpcds-kit"
-  ```
-
-4. Install `mysql` and make `mysql` to manage the HIVE metastore instead the default `derby` so that multiple connections can be made access the HIVE Database parallelly.
+2. Install `mysql` and make `mysql` to manage the HIVE metastore instead the default `derby` so that multiple connections can be made access the HIVE Database parallelly.
   
     a. Install the following packages in Ubuntu. 
     
@@ -113,7 +79,7 @@
     mysql -u hive -p 
     ```
 
-5. Create a file `hive-site.xml` under ${SPARK_HOME}/conf/, if not found. Make similar changes as follows so that spark uses the mysql DB for HIVE metastore information for SQLContext based queries,
+3. Create a file `hive-site.xml` under ${SPARK_HOME}/conf/, if not found. Make similar changes as follows so that spark uses the mysql DB for HIVE metastore information for SQLContext based queries,
 
   ```bash
     vi ${SPARK_HOME}/conf/hive-site.xml
@@ -145,44 +111,17 @@
           </property>
     </configuration>
   ```
-
-6. Take copy of the `tpcds_conf/`, `tpcds_queries/` and `tpcds_utils` directory and place it under `WORKDIR` directory.
-
-  ```
-  cd tpcds-setup
-  cp -r tpcds_conf/ ${WORKDIR}/
-  cp -r tpcds_queries/ ${WORKDIR}/
-  cp -r tpcds_utils/ ${WORKDIR}/
-  
-  ```
    
-7. Download jmeter version 2.13 from the below link,
+4. Check the ${WORKDIR}/tpcds-setup/tpcds_conf/run.config file before running tpcds benchmark scripts,
    
-   ```
-      cd ${WORKDIR}
-      wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-2.13.tgz
-      tar zxf apache-jmeter-2.13.tgz
-   ```
-
-   Set JMETER_PATH to the downloaded absolute path. Refer Step 8.
-   
-8. Config the ${WORKDIR}/tpcds_conf/run.config file before running tpcds benchmark scripts,
-
-   ```
-   export LOG_DIR=${WORKDIR}/tpcds_logs
-   export QUERIES_DIR=${WORKDIR}/tpcds_queries
-   export JMETER_PATH=${WORKDIR}/apache-jmeter-2.13/bin/jmeter
-   export SQLPERF_JAR=${WORKDIR}/spark-sql-perf/target/scala-2.10/spark-sql-perf_2.10-0.3.2.jar
-   ```
-   
-9. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
+5. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
 
   ```
     genData.sh hdfs://localhost[:port]/tpcds-xxx <size_in_mb>
     createDB.sh hdfs://localhost[:port]/tpcds-xxx <size_in_mb> <db_name>
   ```
 
-10. There are 2 types of tpcds benchmark script provided,
+6. There are 2 types of tpcds benchmark script provided,
    
     a. To run one sql query at a time and to get the execution time invoke `run_single.sh` script as follows,
     
