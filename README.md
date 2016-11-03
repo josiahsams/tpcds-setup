@@ -152,6 +152,8 @@
    
     b. run throughput test by invoking jmeter inside the script,
     
+    Before running it, make sure to set `HOST`, `USER`  & `PASSWD` so that jmeter uses it to spawn multiple workloads.
+    
   ```   
   run_throughput_with_jmeter_nm.sh tpcds5G 200
   ```
