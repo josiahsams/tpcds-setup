@@ -7,6 +7,7 @@ type CP >/dev/null 2>&1 || { echo >&2 "Require CP script to be in path. Aborting
 
 REPO_DIR=${WORKDIR}/tpcds-setup
 DEPSDIR=${REPO_DIR}/tpcdeps
+UTILS_DIR=${REPO_DIR}/tpcds_utils/
 
 mkdir -p ${DEPSDIR}
 
@@ -64,11 +65,79 @@ if [ ! -f ${JMETER_BIN} ]; then
     wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-2.13.tgz
     tar zxf apache-jmeter-2.13.tgz
     # install jmeter-ssh-sampler. Refer https://code.google.com/archive/p/jmeter-ssh-sampler/downloads
-    cp ${REPO_DIR}/tpcds_utils/jmeter-ssh-sampler-0.1.0.jar ${DEPSDIR}/apache-jmeter-2.13/lib/ext
+    cp ${UTILS_DIR}/jmeter-ssh-sampler-0.1.0.jar ${DEPSDIR}/apache-jmeter-2.13/lib/ext
     # Refer http://www.jcraft.com/jsch/index.html
-    cp ${REPO_DIR}/tpcds_utils/jsch-0.1.54.jar ${DEPSDIR}/apache-jmeter-2.13/lib
+    cp ${UTILS_DIR}/jsch-0.1.54.jar ${DEPSDIR}/apache-jmeter-2.13/lib
 
     sed -i '/^#jmeterengine.force.system.exit/s/^#jmeterengine.force.system.exit.*/jmeterengine.force.system.exit=true/g' ${DEPSDIR}/apache-jmeter-2.13/bin/jmeter.properties
 fi
 
+# Check mysql is already installed
+echo "Setting up mysql"
+dpkg -l | grep mysql >/dev/null 2>&1
 
+if [ $? -ne 0 ]; then
+    sudo apt-key update
+    sudo apt-get -y update
+    sudo apt-get -y dist-upgrade
+
+    dpkg -S /usr/bin/mysq
+    if [ $? -ne 0 ]; then
+       sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password passw0rd'
+       sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password passw0rd'
+       sudo apt-get -y install mysql-server --force-yes
+       sudo apt-get -y install mysql-client --force-yes
+    fi
+else
+    echo "mysql is already installed"
+fi
+
+if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
+  sudo apt-get -y install libmysql-java --force-yes
+else
+  echo "mysql connector is installed already"
+fi
+
+sudo netstat -tap | grep mysql >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    sudo systemctl restart mysql.service
+    sudo netstat -tap | grep mysql
+    if [ $? -ne 0 ]; then
+        echo "Failed to start mysql"
+        exit 255
+    fi
+fi
+
+# Check for hive user
+mysql -u root -ppassw0rd -e 'select user from mysql.user where user="hive" and host="localhost";' 2>&1 | grep -w hive >/dev/null
+if [ $? -ne 0 ]; then
+    mysql -u root -ppassw0rd -e "CREATE USER 'hive'@'%' IDENTIFIED BY 'hivepassword';GRANT all on *.* to 'hive'@localhost identified by 'hivepassword';flush privileges;"
+    if [ $? -ne 0 ]; then
+        echo "Failed to create hive user"
+        exit 255
+    fi
+else
+    mysql -u hive -phivepassword -e "show databases;" >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "Note: Error accessing hive user with the password: hivepassword;"
+        echo "      Ensure that the ConnectionUserName/ConnectionPassword in hive-site.xml"
+        echo "      in Spark conf directory matches with the mysql's hive user"
+    fi
+fi
+
+# Place hive-site.xml into ${SPARK_HOME}/conf/
+
+if [! -f ${SPARK_HOME}/conf/hive-site.xml ]; then
+    cp ${UTILS_DIR}/hive-site.xml.template ${SPARK_HOME}/conf/hive-site.xml 
+    if [ $? -eq 0 ]; then
+       echo "Sucessfully placed ${SPARK_HOME}/conf/hive-site.xml"
+    fi
+else
+    echo "${SPARK_HOME}/conf/hive-site.xml exist already."
+    echo "Note: Check it out javax.jdo.option.ConnectionUserName"
+    echo "      and javax.jdo.option.ConnectionPassword attributes"
+    echo "      it should match with the mysql's hive user"
+fi
+
+
+exit 0
