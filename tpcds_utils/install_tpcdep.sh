@@ -14,17 +14,17 @@ mkdir -p ${DEPSDIR}
 DEPSLOGS=${DEPSDIR}/install_tpcdep.log.$$
 echo "Logs will be placed under ${DEPSLOGS} "
 
-echo "Setting up spark-sql-perf"
+echo -n "Setting up spark-sql-perf ... "
 cd ${DEPSDIR}
 if [ ! -d ${DEPSDIR}/spark-sql-perf ]; then
-   git clone https://github.com/josiahsams/spark-sql-perf 
+   git clone https://github.com/josiahsams/spark-sql-perf
    cd ./spark-sql-perf
 #  Not required for this git repo
 #  git checkout -b v0.3.2 v0.3.2
 fi
 
-SQLPERF_JAR=${DEPSDIR}/spark-sql-perf/target/scala-2.10/spark-sql-perf_2.10-0.3.2.jar
-if [ ! -f ${SQLPERF_JAR} ]; then
+SQLPERF_JAR=${DEPSDIR}/spark-sql-perf/target/scala-2.10/spark-sql-perf*.jar
+if ! ls ${SQLPERF_JAR} 1> /dev/null 2>&1; then
    cd ${DEPSDIR}/spark-sql-perf
    export DBC_USERNAME=`whoami`
    ./build/sbt clean package >> ${DEPSLOGS}  2>&1
@@ -33,9 +33,10 @@ if [ ! -f ${SQLPERF_JAR} ]; then
    	exit
    fi
 fi
+echo "done"
 
 
-echo "Setting up tpcds-kit"
+echo -n "Setting up tpcds-kit ... "
 cd ${DEPSDIR}
 KIT_PATH=${DEPSDIR}/tpcds-kit/tools
 if [ ! -d ${KIT_PATH} ]; then
@@ -48,12 +49,13 @@ if [ ! -d ${KIT_PATH} ]; then
         exit
    fi
 fi
+echo "done"
 
 echo "Copy tpcds-kit to all the slave nodes"
 cd ${DEPSDIR}
 tar cf tpcds-kit.tar ./tpcds-kit
 DN "mkdir -p ${DEPSDIR}"
-CP ${DEPSDIR}/tpcds-kit.tar ${DEPSDIR}/tpcds-kit.tar 
+CP ${DEPSDIR}/tpcds-kit.tar ${DEPSDIR}/tpcds-kit.tar
 DN "tar xf ${DEPSDIR}/tpcds-kit.tar -C ${DEPSDIR} "
 AN "chmod -R a+rx ${DEPSDIR}/tpcds-kit"
 
@@ -74,6 +76,12 @@ fi
 
 # Check mysql is already installed
 echo "Setting up mysql"
+
+lsb_release -a |grep RedHat  >/dev/null 2>&1
+
+# Ubuntu
+if [ $? -ne 0 ]; then
+
 dpkg -l | grep mysql >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
@@ -108,6 +116,29 @@ if [ $? -ne 0 ]; then
     fi
 fi
 
+else
+# RedHat
+rpm -qa |grep maria >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	sudo yum install mariadb mariadb-server >/dev/null 2>&1
+	sudo systemctl start mariadb.service
+	sudo systemctl enable mariadb.service
+   echo "Now mysql is installed."
+   echo "Note: run '/usr/bin/mysql_secure_installation' to set root password"
+   echo "and rerun this script to continue with the other setups."
+   exit 0
+else
+    echo "mysql is already installed"
+fi
+
+if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
+  sudo sudo yum install mysql-connector-java
+else
+  echo "mysql connector is installed already"
+fi
+
+fi
+
 # Check for hive user
 mysql -u root -ppassw0rd -e 'select user from mysql.user where user="hive" and host="localhost";' 2>&1 | grep -w hive >/dev/null
 if [ $? -ne 0 ]; then
@@ -116,6 +147,7 @@ if [ $? -ne 0 ]; then
         echo "Failed to create hive user"
         exit 255
     fi
+    echo "User hive added to mysql"
 else
     mysql -u hive -phivepassword -e "show databases;" >/dev/null 2>&1
     if [ $? -ne 0 ]; then
@@ -123,12 +155,13 @@ else
         echo "      Ensure that the ConnectionUserName/ConnectionPassword in hive-site.xml"
         echo "      in Spark conf directory matches with the mysql's hive user"
     fi
+    echo "Existing user hive in mysql is sufficient."
 fi
 
 # Place hive-site.xml into ${SPARK_HOME}/conf/
 
-if [! -f ${SPARK_HOME}/conf/hive-site.xml ]; then
-    cp ${UTILS_DIR}/hive-site.xml.template ${SPARK_HOME}/conf/hive-site.xml 
+if [ ! -f ${SPARK_HOME}/conf/hive-site.xml ]; then
+    cp ${UTILS_DIR}/hive-site.xml.template ${SPARK_HOME}/conf/hive-site.xml
     if [ $? -eq 0 ]; then
        echo "Sucessfully placed ${SPARK_HOME}/conf/hive-site.xml"
     fi
