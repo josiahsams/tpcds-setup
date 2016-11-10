@@ -172,5 +172,20 @@ else
     echo "      it should match with the mysql's hive user"
 fi
 
+echo "Adding mysql connector to Spark Classpath"
+grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#" | grep mysql-connector-java.jar
+if [ $? -ne 0 ]; then
+	grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#" 
+	if [ $? -ne 0 ]; then
+	# Fresh entry
+		echo "export SPARK_CLASSPATH=/usr/share/java/mysql-connector-java.jar" >> ${SPARK_HOME}/conf/spark-env.sh
+	else
+	# append to the existing CLASSPATH
+		sed -i '/^export SPARK_CLASSPATH/ s~$~:/usr/share/java/mysql-connector-java.jar~' ${SPARK_HOME}/conf/spark-env.sh
+	fi
+	echo "Added mysql-connector-java.jar to spark classpath"
+else 
+   echo "mysql-connector-java.jar is already found in spark-env.sh config file"
+fi
 
 exit 0
