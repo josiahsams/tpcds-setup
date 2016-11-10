@@ -77,14 +77,14 @@ fi
 # Check mysql is already installed
 echo "Setting up mysql"
 
-lsb_release -a |grep RedHat  >/dev/null 2>&1
+python -mplatform  |grep -i redhat >/dev/null 2>&1
 
 # Ubuntu
 if [ $? -ne 0 ]; then
 
-dpkg -l | grep mysql >/dev/null 2>&1
+  dpkg -l | grep mysql >/dev/null 2>&1
 
-if [ $? -ne 0 ]; then
+  if [ $? -ne 0 ]; then
     sudo apt-key update
     sudo apt-get -y update
     sudo apt-get -y dist-upgrade
@@ -96,47 +96,73 @@ if [ $? -ne 0 ]; then
        sudo apt-get -y install mysql-server --force-yes
        sudo apt-get -y install mysql-client --force-yes
     fi
-else
+  else
     echo "mysql is already installed"
-fi
+  fi
 
-if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
-  sudo apt-get -y install libmysql-java --force-yes
-else
-  echo "mysql connector is installed already"
-fi
+  if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
+    sudo apt-get -y install libmysql-java --force-yes
+  else
+    echo "mysql connector is installed already"
+  fi
 
-sudo netstat -tap | grep mysql >/dev/null 2>&1
-if [ $? -ne 0 ]; then
+  sudo netstat -tap | grep mysql >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
     sudo systemctl restart mysql.service
     sudo netstat -tap | grep mysql
     if [ $? -ne 0 ]; then
         echo "Failed to start mysql"
         exit 255
     fi
-fi
-
+  fi
 else
-# RedHat
-rpm -qa |grep maria >/dev/null 2>&1
-if [ $? -ne 0 ]; then
-	sudo yum install mariadb mariadb-server >/dev/null 2>&1
+  # RedHat
+  rpm -qa |grep maria >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+	sudo yum install mariadb mariadb-server mariadb-libs >/dev/null 2>&1
 	sudo systemctl start mariadb.service
 	sudo systemctl enable mariadb.service
-   echo "Now mysql is installed."
-   echo "Note: run '/usr/bin/mysql_secure_installation' to set root password"
-   echo "and rerun this script to continue with the other setups."
-   exit 0
-else
+	
+	rpm -qa | grep expect >/dev/null 2>&1
+	if [ $? -ne 0 ] ; then
+	  sudo yum -y install expect >/dev/null 2>&1
+	fi
+	
+	MYSQL=passw0rd
+
+	echo "Setting mysql root password to ${MYSQL}"
+	SECURE_MYSQL=$(expect -c "
+	set timeout 10
+	spawn mysql_secure_installation
+	expect \"Enter current password for root (enter for none):\"
+	send \"\r\"
+	expect \"Set root password?\"
+	send \"y\r\"
+	expect \"New password:\"
+	send \"$MYSQL\r\"
+	expect \"Re-enter new password:\"
+	send \"$MYSQL\r\"
+	expect \"Remove anonymous users?\"
+	send \"y\r\"
+	expect \"Disallow root login remotely?\"
+	send \"y\r\"
+	expect \"Remove test database and access to it?\"
+	send \"y\r\"
+	expect \"Reload privilege tables now?\"
+	send \"y\r\"
+	expect eof
+	")
+
+	echo "$SECURE_MYSQL"
+  else
     echo "mysql is already installed"
-fi
+  fi
 
-if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
-  sudo sudo yum install mysql-connector-java
-else
-  echo "mysql connector is installed already"
-fi
-
+  if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
+    sudo sudo yum install mysql-connector-java
+  else
+    echo "mysql connector is installed already"
+ fi
 fi
 
 # Check for hive user
