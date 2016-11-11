@@ -17,7 +17,7 @@ echo "Logs will be placed under ${DEPSLOGS} "
 echo -n "Setting up spark-sql-perf ... "
 cd ${DEPSDIR}
 if [ ! -d ${DEPSDIR}/spark-sql-perf ]; then
-   git clone https://github.com/josiahsams/spark-sql-perf
+   git clone https://github.com/josiahsams/spark-sql-perf-spark2.0.0 spark-sql-perf
    cd ./spark-sql-perf
 #  Not required for this git repo
 #  git checkout -b v0.3.2 v0.3.2
