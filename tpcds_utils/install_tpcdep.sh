@@ -35,6 +35,55 @@ if ! ls ${SQLPERF_JAR} 1> /dev/null 2>&1; then
 fi
 echo "done"
 
+echo "Check for compiler and its dependencies"
+if [ ! -f /usr/bin/python ]; then
+	if [ -f /usr/bin/apt-get ]; then
+		# install python in ubuntu
+		sudo apt-get -y install python-minimal
+	else
+		# install python in RHEL
+		sudo yum -y install python2
+	fi
+fi
+
+python -mplatform  |grep -i redhat >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	# Ubuntu
+	dpkg -l | grep gcc  >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		sudo apt-get -y install gcc
+	fi
+	dpkg -l | grep make  >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		sudo apt-get -y install make
+	fi
+	dpkg -l | grep bison  >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		sudo apt-get -y install bison
+	fi
+	dpkg -l | grep flex  >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		sudo apt-get -y install flex
+	fi
+else
+	# RHEL
+	rpm -qa |grep gcc >/dev/null 2>&1
+  	if [ $? -ne 0 ]; then
+		sudo yum -y install gcc
+	fi
+	rpm -qa |grep make >/dev/null 2>&1
+  	if [ $? -ne 0 ]; then
+		sudo yum -y install make
+	fi
+	rpm -qa |grep flex >/dev/null 2>&1
+  	if [ $? -ne 0 ]; then
+		sudo yum -y install flex
+	fi
+	rpm -qa |grep bison >/dev/null 2>&1
+  	if [ $? -ne 0 ]; then
+		sudo yum -y install bison
+	fi
+fi
 
 echo -n "Setting up tpcds-kit ... "
 cd ${DEPSDIR}
@@ -119,15 +168,15 @@ else
   # RedHat
   rpm -qa |grep maria >/dev/null 2>&1
   if [ $? -ne 0 ]; then
-	sudo yum install mariadb mariadb-server mariadb-libs >/dev/null 2>&1
+	sudo yum -y install mariadb mariadb-server mariadb-libs >/dev/null 2>&1
 	sudo systemctl start mariadb.service
 	sudo systemctl enable mariadb.service
-	
+
 	rpm -qa | grep expect >/dev/null 2>&1
 	if [ $? -ne 0 ] ; then
 	  sudo yum -y install expect >/dev/null 2>&1
 	fi
-	
+
 	MYSQL=passw0rd
 
 	echo "Setting mysql root password to ${MYSQL}"
@@ -159,7 +208,7 @@ else
   fi
 
   if [ ! -f /usr/share/java/mysql-connector-java.jar ]; then
-    sudo sudo yum install mysql-connector-java
+    sudo sudo yum -y install mysql-connector-java
   else
     echo "mysql connector is installed already"
  fi
@@ -201,7 +250,7 @@ fi
 echo "Adding mysql connector to Spark Classpath"
 grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#" | grep mysql-connector-java.jar
 if [ $? -ne 0 ]; then
-	grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#" 
+	grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#"
 	if [ $? -ne 0 ]; then
 	# Fresh entry
 		echo "export SPARK_CLASSPATH=/usr/share/java/mysql-connector-java.jar" >> ${SPARK_HOME}/conf/spark-env.sh
@@ -210,7 +259,7 @@ if [ $? -ne 0 ]; then
 		sed -i '/^export SPARK_CLASSPATH/ s~$~:/usr/share/java/mysql-connector-java.jar~' ${SPARK_HOME}/conf/spark-env.sh
 	fi
 	echo "Added mysql-connector-java.jar to spark classpath"
-else 
+else
    echo "mysql-connector-java.jar is already found in spark-env.sh config file"
 fi
 
