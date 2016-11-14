@@ -30,7 +30,7 @@ SEQ=0
 CNT=`ls -lrt ${LOG_DIR}/${PREFIX}_*.nohup 2>/dev/null | wc | awk '{print \$1}'`
 SEQ=$CNT
 
-cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && echo 3 > /proc/sys/vm/drop_caches"
+cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && echo 3 | sudo tee /proc/sys/vm/drop_cachess"
 
 # CUR_NMON_DIR=${NMON_DIR}/${PREFIX}_${SEQ}_nmon_logs
 # startnmon.sh $CUR_NMON_DIR
