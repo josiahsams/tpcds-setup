@@ -28,7 +28,7 @@ PREFIX=throughput_${ARCH}_jmeter
 
 SEQ=$$
 
-cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && echo 3 > sudo tee /proc/sys/vm/drop_caches"
+cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && echo 3 | sudo tee /proc/sys/vm/drop_caches"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
