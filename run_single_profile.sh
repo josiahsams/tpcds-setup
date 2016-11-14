@@ -35,9 +35,17 @@ cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && ech
 # CUR_NMON_DIR=${NMON_DIR}/${PREFIX}_${SEQ}_nmon_logs
 # startnmon.sh $CUR_NMON_DIR
 
-echo "Execution logs will be placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup " 
+type operf >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "operf is not installed. Exiting."
+	exit 255
+fi
 
-# /usr/bin/time -v ${SPARK_HOME}/bin/spark-sql --master yarn-client --conf spark.kryo.referenceTracking=true --conf spark.shuffle.io.numConnectionsPerPeer=4 --conf spark.reducer.maxSizeInFlight=128m --conf spark.executor.extraJavaOptions="-Diop.version=4.1.0.0 -XX:ParallelGCThreads=${gcThreads} -XX:+AlwaysTenure" --conf spark.sql.shuffle.partitions=${sql_shuffle_partitions} --conf spark.yarn.driver.memoryOverhead=400 --conf spark.yarn.executor.memoryOverhead=${executor_memoryOverhead} --conf spark.shuffle.consolidateFiles=true --conf spark.reducer.maxSizeInFlight=128m --conf spark.sql.autoBroadcastJoinThreshold=67108864 --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --name ${query_name} --database ${databaseName} --driver-memory 12g --driver-cores 16 --num-executors ${num_executors} --executor-cores ${executor_cores} --executor-memory ${executor_memory} -f ${QUERIES_DIR}/${query_name}.sql > ${LOG_DIR}/${PREFIX}_${SEQ}.nohup 2>&1
+rm -rf oprofile_data
+operf -s -e CYCLES:1000000 &
+OPPID=$!
+
+
 /usr/bin/time -v ${SPARK_HOME}/bin/spark-sql                                                                                        \
             --conf  spark.kryo.referenceTracking=true                                                                               \
             --conf spark.shuffle.io.numConnectionsPerPeer=4                                                                         \
@@ -50,6 +58,8 @@ echo "Execution logs will be placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
             --conf spark.reducer.maxSizeInFlight=128m                                                                               \
             --conf spark.sql.autoBroadcastJoinThreshold=67108864                                                                    \
             --conf spark.serializer=org.apache.spark.serializer.KryoSerializer                                                      \
+            --conf spark.io.compression.codec=snappy                                                                                \
+            --conf spark.sql.parquet.compression.codec=snappy                                                                       \
             --master yarn-client                                                                                                    \
             --name ${query_name}                                                                                                    \
             --database ${databaseName}                                                                                              \
@@ -60,12 +70,17 @@ echo "Execution logs will be placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
             --executor-memory ${executor_memory}                                                                                    \
             --verbose                                                                                                               \
             -f ${QUERIES_DIR}/${query_name}.sql 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
-            
-echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup " 
+
+echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
+
+/bin/kill -SIGINT $OPPID
+opreport > out-report
+opreport --symbols > out-report--symbols
+#opannotate -a >out-annotate--assembly
+
 
 # stopnmon.sh $CUR_NMON_DIR
 
 cd ${SPARK_EVENT_LOG_PATH}
 ls -lart application* | tail -n 1 | awk '{print $9}' | xargs -i tar czf ${LOG_DIR}/{}.tgz {}
 cd -
-
