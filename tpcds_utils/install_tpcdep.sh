@@ -23,6 +23,9 @@ if [ ! -d ${DEPSDIR}/spark-sql-perf ]; then
 #  git checkout -b v0.3.2 v0.3.2
 fi
 
+# As the install steps involve accessing multiple Secure Sites, lets ensure the CA certificates are in place.
+AN "sudo update-ca-certificates -f >/dev/null 2>&1"
+
 SQLPERF_JAR=${DEPSDIR}/spark-sql-perf/target/scala-2.10/spark-sql-perf*.jar
 if ! ls ${SQLPERF_JAR} 1> /dev/null 2>&1; then
    cd ${DEPSDIR}/spark-sql-perf
