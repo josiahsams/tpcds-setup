@@ -11,6 +11,7 @@ RUNCONF=${WORKDIR}/tpcds-setup/tpcds_conf/run.config
 
 if [ ! -f ${RUNCONF} ]; then
     echo "File : ${RUNCONF} not found!"
+    exit 255
 fi
 
 . ${RUNCONF}
@@ -46,6 +47,7 @@ export OPERFLIB=${WORKDIR}/oprofile_install/lib
 if [! -d ${OPERFLIB} ]; then
     echo "OPERFLIB is not set properly"
     echo "check OPERFLIB value in this script and continue."
+    exit 255
 fi
 
 rm -rf oprofile_data
