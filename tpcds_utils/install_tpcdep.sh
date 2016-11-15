@@ -248,19 +248,30 @@ else
 fi
 
 echo "Adding mysql connector to Spark Classpath"
-grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#" | grep mysql-connector-java.jar
+grep spark.executor.extraClassPath ${SPARK_HOME}/conf/spark-defaults.conf | grep -v "^#" | grep mysql-connector-java.jar >/dev/null 2>&1
 if [ $? -ne 0 ]; then
-	grep SPARK_CLASSPATH ${SPARK_HOME}/conf/spark-env.sh | grep -v "^#"
+	grep spark.executor.extraClassPath ${SPARK_HOME}/conf/spark-defaults.conf | grep -v "^#" >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
 	# Fresh entry
-		echo "export SPARK_CLASSPATH=/usr/share/java/mysql-connector-java.jar" >> ${SPARK_HOME}/conf/spark-env.sh
+		echo "spark.executor.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${SPARK_HOME}/conf/spark-defaults.conf
 	else
 	# append to the existing CLASSPATH
-		sed -i '/^export SPARK_CLASSPATH/ s~$~:/usr/share/java/mysql-connector-java.jar~' ${SPARK_HOME}/conf/spark-env.sh
+		sed -i '/^spark.executor.extraClassPath/ s~$~:/usr/share/java/mysql-connector-java.jar~' ${SPARK_HOME}/conf/spark-defaults.conf
 	fi
 	echo "Added mysql-connector-java.jar to spark classpath"
-else
-   echo "mysql-connector-java.jar is already found in spark-env.sh config file"
+fi
+
+grep spark.driver.extraClassPath ${SPARK_HOME}/conf/spark-defaults.conf | grep -v "^#" | grep mysql-connector-java.jar >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	grep spark.driver.extraClassPath ${SPARK_HOME}/conf/spark-defaults.conf | grep -v "^#" >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+	# Fresh entry
+		echo "spark.driver.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${SPARK_HOME}/conf/spark-defaults.conf
+	else
+	# append to the existing CLASSPATH
+		sed -i '/^spark.driver.extraClassPath/ s~$~:/usr/share/java/mysql-connector-java.jar~' ${SPARK_HOME}/conf/spark-defaults.conf
+	fi
+	echo "Added mysql-connector-java.jar to spark classpath"
 fi
 
 exit 0
