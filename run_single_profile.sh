@@ -41,36 +41,44 @@ if [ $? -ne 0 ]; then
 	exit 255
 fi
 
+export OPERFLIB=${WORKDIR}/oprofile_install/lib
+
+if [! -d ${OPERFLIB} ]; then
+    echo "OPERFLIB is not set properly"
+    echo "check OPERFLIB value in this script and continue."
+fi
+
 rm -rf oprofile_data
 operf -s -e CYCLES:1000000 &
 OPPID=$!
 
-
-/usr/bin/time -v ${SPARK_HOME}/bin/spark-sql                                                                                        \
-            --conf  spark.kryo.referenceTracking=true                                                                               \
-            --conf spark.shuffle.io.numConnectionsPerPeer=4                                                                         \
-            --conf spark.reducer.maxSizeInFlight=128m                                                                               \
-            --conf spark.executor.extraJavaOptions="-Diop.version=4.1.0.0 -XX:ParallelGCThreads=${gcThreads} -XX:+AlwaysTenure"     \
-            --conf spark.sql.shuffle.partitions=${sql_shuffle_partitions}                                                           \
-            --conf spark.yarn.driver.memoryOverhead=400                                                                             \
-            --conf spark.yarn.executor.memoryOverhead=${executor_memoryOverhead}                                                    \
-            --conf spark.shuffle.consolidateFiles=true                                                                              \
-            --conf spark.reducer.maxSizeInFlight=128m                                                                               \
-            --conf spark.sql.autoBroadcastJoinThreshold=67108864                                                                    \
-            --conf spark.serializer=org.apache.spark.serializer.KryoSerializer                                                      \
-            --conf spark.io.compression.codec=snappy                                                                                \
-            --conf spark.sql.parquet.compression.codec=snappy                                                                       \
-            --master yarn-client                                                                                                    \
-            --name ${query_name}                                                                                                    \
-            --database ${databaseName}                                                                                              \
-            --driver-memory 12g                                                                                                     \
-            --driver-cores 16                                                                                                       \
-            --num-executors ${num_executors}                                                                                        \
-            --executor-cores ${executor_cores}                                                                                      \
-            --executor-memory ${executor_memory}                                                                                    \
-            --verbose                                                                                                               \
-            -f ${QUERIES_DIR}/${query_name}.sql 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
-
+/usr/bin/time -v ${SPARK_HOME}/bin/spark-sql                                                                                \
+    --conf  spark.kryo.referenceTracking=true                                                                               \
+    --conf spark.shuffle.io.numConnectionsPerPeer=4                                                                         \
+    --conf spark.reducer.maxSizeInFlight=128m                                                                               \
+    --conf spark.executor.extraJavaOptions="-XX:ParallelGCThreads=${gcThreads} -XX:+AlwaysTenure -agentpath:${OPERFLIB}/oprofile/libjvmti_oprofile.so" \
+    --conf spark.sql.shuffle.partitions=${sql_shuffle_partitions}                                                           \
+    --conf spark.yarn.driver.memoryOverhead=400                                                                             \
+    --conf spark.yarn.executor.memoryOverhead=${executor_memoryOverhead}                                                    \
+    --conf spark.shuffle.consolidateFiles=true                                                                              \
+    --conf spark.reducer.maxSizeInFlight=128m                                                                               \
+    --conf spark.sql.autoBroadcastJoinThreshold=67108864                                                                    \
+    --conf spark.serializer=org.apache.spark.serializer.KryoSerializer                                                      \
+    --conf spark.io.compression.codec=snappy                                                                                \
+    --conf spark.sql.parquet.compression.codec=snappy                                                                       \
+    --master yarn-client                                                                                                    \
+    --name ${query_name}                                                                                                    \
+    --database ${databaseName}                                                                                              \
+    --driver-memory 12g                                                                                                     \
+    --driver-cores 16                                                                                                       \
+    --conf spark.executor.extraLibraryPath=${OPERFLIB}                                                                      \
+    --driver-library-path ${OPERFLIB}                                                                                       \
+    --driver-java-options "-agentpath:${OPERFLIB}/oprofile/libjvmti_oprofile.so"                                            \
+    --num-executors ${num_executors}                                                                                        \
+    --executor-cores ${executor_cores}                                                                                      \
+    --executor-memory ${executor_memory}                                                                                    \
+    --verbose                                                                                                               \
+    -f ${QUERIES_DIR}/${query_name}.sql 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
 echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
 
 /bin/kill -SIGINT $OPPID
