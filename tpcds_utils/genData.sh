@@ -17,12 +17,12 @@ if [ $# -ne 2 ]; then
 fi
 
 hdfs_path=$1
-size_in_mb=$2
+size_in_gb=$2
 
 SCRIPT=${REPO_DIR}/tpcds_utils/genData.scala
 SCRIPT_TO_EXECUTE=${REPO_DIR}/tpcds_utils/genData.scala.$$
 
-sed "s~KIT_PATH =.*~KIT_PATH = \"${KIT_PATH}\"~g; s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_MB =.*~SIZE_IN_MB = ${size_in_mb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}
+sed "s~KIT_PATH =.*~KIT_PATH = \"${KIT_PATH}\"~g; s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_GB =.*~SIZE_IN_GB = ${size_in_gb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}
 
 # Below parameters will be initialized from run.config and can be overriden here
 # DRIVER_MEM=30g
