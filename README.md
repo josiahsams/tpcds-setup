@@ -38,7 +38,23 @@
   - Download, install and config mysql
   - Config spark hivecontext to use mysql as DB to store metastore
   
-2. Check the ${WORKDIR}/tpcds-setup/tpcds_conf/run.config file before running tpcds benchmark scripts,
+2. Check the following variables in `${WORKDIR}/tpcds-setup/tpcds_conf/run.config` file before running tpcds benchmark scripts,
+
+```
+# Runtime config paramters
+DRIVER_MEM=30g
+DRIVER_CORES=10
+NUM_EXECUTORS=27
+EXEC_CORES=15
+EXEC_MEM=20g
+
+EXEC_MEM_OVERHEAD=1536
+SHUFFLE_PARTITIONS=64
+GC_THREADS=9
+```
+   Note: 
+   - The above configuration is used in 4 node cluster(1 Master + 3 Slaves) with 200GB+160Cores from each slave nodes.
+   - Make sure you don't allocate more than 30G per executor and size of the other parameters accordingly.
    
 3. Generate the TPC-DS raw data and create the TPC-DS database as well as the table objects. Use the scripts provided in the utils directory.
 
@@ -59,7 +75,7 @@
     a. To run one sql query at a time and to get the execution time invoke `run_single.sh` script as follows,
     
   ```
-  run_single.sh q19 15 30 30g 2048 200 9 tpcds5G
+  run_single.sh q19 15 30 30g tpcds5G
   ```
 
       Note: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19.sql` with other parameters.
