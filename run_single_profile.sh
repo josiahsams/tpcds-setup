@@ -44,7 +44,7 @@ fi
 
 export OPERFLIB=${WORKDIR}/oprofile_install/lib
 
-if [! -d ${OPERFLIB} ]; then
+if [ ! -d ${OPERFLIB} ]; then
     echo "OPERFLIB is not set properly"
     echo "check OPERFLIB value in this script and continue."
     exit 255
