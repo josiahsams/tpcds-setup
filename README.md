@@ -8,7 +8,12 @@
 4. Since we use the environment variables a lot in our scripts, make sure to comment out the portion following this statement in your ~/.bashrc ,
   `If not running interactively, don't do anything`
 5. Kindly refer to the setups & scripts provided in https://github.com/kmadhugit/hadoop-cluster-utils before proceeding further as the utility scripts provided in the repository are needed here.
- 
+6. In order to make the scripts run w/o prompting for password, make sure you run `sudo visudo` and edit the line as follows ,
+
+```
+%sudo   ALL=(ALL:ALL) NOPASSWD:ALL
+```
+	
 ###Steps to run TPC-DS Benchmark:
 
 1. Clone this repository and follow the steps before proceeding.
