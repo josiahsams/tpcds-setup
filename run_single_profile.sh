@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -ne 8 ]; then
-    echo "Usage: $0 <query name> <num-executors> <executor-cores> <executor-memory> <executor-memoryOverhead> <sql-shufle-partitions> <# of GC Threads> <db_name>"
+if [ $# -ne 5 ]; then
+    echo "Usage: $0 <query name> <num-executors> <executor-cores> <executor-memory> <db_name>"
     exit
 fi
 
@@ -20,10 +20,11 @@ query_name=$1
 num_executors=$2
 executor_cores=$3
 executor_memory=$4
-executor_memoryOverhead=$5
-sql_shuffle_partitions=$6
-gcThreads=$7
-databaseName=$8
+databaseName=$5
+
+executor_memoryOverhead=$EXEC_MEM_OVERHEAD
+sql_shuffle_partitions=$SHUFFLE_PARTITIONS
+gcThreads=$GC_THREADS
 
 PREFIX=${query_name}_single_${ARCH}_${num_executors}e_${executor_cores}c_${executor_memory}
 
