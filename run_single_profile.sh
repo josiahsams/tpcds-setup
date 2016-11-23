@@ -43,7 +43,7 @@ if [ $? -ne 0 ]; then
 	exit 255
 fi
 
-export OPERFLIB=${WORKDIR}/oprofile_install/lib
+export OPERFLIB=${WORKDIR}/oprofile/oprofile_install/lib
 
 if [ ! -d ${OPERFLIB} ]; then
     echo "OPERFLIB is not set properly"
@@ -51,9 +51,12 @@ if [ ! -d ${OPERFLIB} ]; then
     exit 255
 fi
 
-rm -rf oprofile_data
-operf -s -e CYCLES:1000000 &
-OPPID=$!
+ oprofile_start.sh
+
+# sudo rm -rf oprofile_data
+# sudo /home/testuser/oprofile/oprofile_install/bin/operf -s -e CYCLES:1000000 &
+# OPPID=$!
+# echo "Started operf with PID : $OPPID"
 
 /usr/bin/time -v ${SPARK_HOME}/bin/spark-sql                                                                                \
     --conf  spark.kryo.referenceTracking=true                                                                               \
@@ -69,7 +72,8 @@ OPPID=$!
     --conf spark.serializer=org.apache.spark.serializer.KryoSerializer                                                      \
     --conf spark.io.compression.codec=snappy                                                                                \
     --conf spark.sql.parquet.compression.codec=snappy                                                                       \
-    --master yarn-client                                                                                                    \
+    --master yarn                                                                                                           \
+    --deploy-mode client                                                                                                    \
     --name ${query_name}                                                                                                    \
     --database ${databaseName}                                                                                              \
     --driver-memory 12g                                                                                                     \
@@ -84,9 +88,12 @@ OPPID=$!
     -f ${QUERIES_DIR}/${query_name}.sql 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
 echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
 
-/bin/kill -SIGINT $OPPID
-opreport > out-report
-opreport --symbols > out-report--symbols
+ oprofile_stop.sh
+
+#  sudo /bin/kill -SIGINT $OPPID
+#  sleep 30
+#  sudo /home/testuser/oprofile/oprofile_install/bin/opreport > out-report
+#  sudo /home/testuser/oprofile/oprofile_install/bin/opreport --symbols > out-report--symbols
 #opannotate -a >out-annotate--assembly
 
 
