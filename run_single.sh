@@ -56,7 +56,7 @@ echo "Execution logs will be placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
     --deploy-mode client                                                                                                    \
     --name ${query_name}                                                                                                    \
     --database ${databaseName}                                                                                              \
-    --driver-memory 12g                                                                                                     \
+    --driver-memory 22g                                                                                                     \
     --driver-cores 16                                                                                                       \
     --num-executors ${num_executors}                                                                                        \
     --executor-cores ${executor_cores}                                                                                      \
