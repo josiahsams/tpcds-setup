@@ -20,7 +20,7 @@ hdfs_path=$1
 size_in_gb=$2
 
 SCRIPT=${REPO_DIR}/tpcds_utils/genData.scala
-SCRIPT_TO_EXECUTE=${REPO_DIR}/tpcds_utils/genData.scala.$$
+SCRIPT_TO_EXECUTE=${LOG_DIR}/genData.scala.$$
 
 sed "s~KIT_PATH =.*~KIT_PATH = \"${KIT_PATH}\"~g; s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_GB =.*~SIZE_IN_GB = ${size_in_gb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}
 

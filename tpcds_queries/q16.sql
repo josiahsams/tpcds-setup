@@ -6,7 +6,7 @@
              from
                catalog_sales cs1, date_dim, customer_address, call_center
              where
-               d_date between '2002-2-01' and (cast('2002-2-01' as date) + 60)
+               d_date between '2002-2-01' and (cast('2002-2-01' as date) + interval 60 days)
              and cs1.cs_ship_date_sk = d_date_sk
              and cs1.cs_ship_addr_sk = ca_address_sk
              and ca_state = 'GA'

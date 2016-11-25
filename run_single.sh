@@ -52,7 +52,7 @@ echo "Execution logs will be placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup "
     --conf spark.reducer.maxSizeInFlight=128m                                                                               \
     --conf spark.sql.autoBroadcastJoinThreshold=67108864                                                                    \
     --conf spark.serializer=org.apache.spark.serializer.KryoSerializer                                                      \
-    --master yarn                                                                                                           \
+    --master local                                                                                                           \
     --deploy-mode client                                                                                                    \
     --name ${query_name}                                                                                                    \
     --database ${databaseName}                                                                                              \

@@ -427,38 +427,38 @@ WITH year_total AS (
              order by s_store_name LIMIT 100;
 -- end query 1 in stream 0 using template query8.tpl
 -- start query 1 in stream 0 using template query9.tpl
---- select case when (select count(*) from store_sales
----                               where ss_quantity between 1 and 20) > ${rc(0)}
----                         then (select avg(ss_ext_discount_amt) from store_sales
----                               where ss_quantity between 1 and 20)
----                         else (select avg(ss_net_paid) from store_sales
----                               where ss_quantity between 1 and 20) end bucket1 ,
----                    case when (select count(*) from store_sales
----                               where ss_quantity between 21 and 40) > ${rc(1)}
----                         then (select avg(ss_ext_discount_amt) from store_sales
----                               where ss_quantity between 21 and 40)
----                         else (select avg(ss_net_paid) from store_sales
----                               where ss_quantity between 21 and 40) end bucket2,
----                    case when (select count(*) from store_sales
----                               where ss_quantity between 41 and 60) > ${rc(2)}
----                         then (select avg(ss_ext_discount_amt) from store_sales
----                               where ss_quantity between 41 and 60)
----                         else (select avg(ss_net_paid) from store_sales
----                               where ss_quantity between 41 and 60) end bucket3,
----                    case when (select count(*) from store_sales
----                               where ss_quantity between 61 and 80) > ${rc(3)}
----                         then (select avg(ss_ext_discount_amt) from store_sales
----                               where ss_quantity between 61 and 80)
----                         else (select avg(ss_net_paid) from store_sales
----                               where ss_quantity between 61 and 80) end bucket4,
----                    case when (select count(*) from store_sales
----                               where ss_quantity between 81 and 100) > ${rc(4)}
----                         then (select avg(ss_ext_discount_amt) from store_sales
----                               where ss_quantity between 81 and 100)
----                         else (select avg(ss_net_paid) from store_sales
----                               where ss_quantity between 81 and 100) end bucket5
----             from reason
----             where r_reason_sk = 1;
+select case when (select count(*) from store_sales
+                              where ss_quantity between 1 and 20) > 1000000
+                        then (select avg(ss_ext_discount_amt) from store_sales
+                              where ss_quantity between 1 and 20)
+                        else (select avg(ss_net_paid) from store_sales
+                              where ss_quantity between 1 and 20) end bucket1 ,
+                   case when (select count(*) from store_sales
+                              where ss_quantity between 21 and 40) > 1000000
+                        then (select avg(ss_ext_discount_amt) from store_sales
+                              where ss_quantity between 21 and 40)
+                        else (select avg(ss_net_paid) from store_sales
+                              where ss_quantity between 21 and 40) end bucket2,
+                   case when (select count(*) from store_sales
+                              where ss_quantity between 41 and 60) > 1000000
+                        then (select avg(ss_ext_discount_amt) from store_sales
+                              where ss_quantity between 41 and 60)
+                        else (select avg(ss_net_paid) from store_sales
+                              where ss_quantity between 41 and 60) end bucket3,
+                   case when (select count(*) from store_sales
+                              where ss_quantity between 61 and 80) > 1000000
+                        then (select avg(ss_ext_discount_amt) from store_sales
+                              where ss_quantity between 61 and 80)
+                        else (select avg(ss_net_paid) from store_sales
+                              where ss_quantity between 61 and 80) end bucket4,
+                   case when (select count(*) from store_sales
+                              where ss_quantity between 81 and 100) > 1000000
+                        then (select avg(ss_ext_discount_amt) from store_sales
+                              where ss_quantity between 81 and 100)
+                        else (select avg(ss_net_paid) from store_sales
+                              where ss_quantity between 81 and 100) end bucket5
+            from reason
+            where r_reason_sk = 1;
 -- end query 1 in stream 0 using template query9.tpl
 -- start query 1 in stream 0 using template query10.tpl
  select
@@ -802,28 +802,28 @@ with cross_items as
              limit 100;
 -- end query 1 in stream 0 using template query15.tpl
 -- start query 1 in stream 0 using template query16.tpl
---- select
----               count(distinct cs_order_number) as `order count`,
----               sum(cs_ext_ship_cost) as `total shipping cost`,
----               sum(cs_net_profit) as `total net profit`
----             from
----               catalog_sales cs1, date_dim, customer_address, call_center
----             where
----               d_date between '2002-2-01' and (cast('2002-2-01' as date) + 60)
----             and cs1.cs_ship_date_sk = d_date_sk
----             and cs1.cs_ship_addr_sk = ca_address_sk
----             and ca_state = 'GA'
----             and cs1.cs_call_center_sk = cc_call_center_sk
----             and cc_county in ('Williamson County','Williamson County','Williamson County','Williamson County', 'Williamson County') 
----             and exists (select *
----                        from catalog_sales cs2
----                        where cs1.cs_order_number = cs2.cs_order_number
----                          and cs1.cs_warehouse_sk <> cs2.cs_warehouse_sk)
----             and not exists(select *
----                           from catalog_returns cr1
----                           where cs1.cs_order_number = cr1.cr_order_number)
----             order by count(distinct cs_order_number)
----             limit 100;
+ select
+               count(distinct cs_order_number) as `order count`,
+               sum(cs_ext_ship_cost) as `total shipping cost`,
+               sum(cs_net_profit) as `total net profit`
+             from
+               catalog_sales cs1, date_dim, customer_address, call_center
+             where
+               d_date between '2002-2-01' and (cast('2002-2-01' as date) + interval 60 days)
+             and cs1.cs_ship_date_sk = d_date_sk
+             and cs1.cs_ship_addr_sk = ca_address_sk
+             and ca_state = 'GA'
+             and cs1.cs_call_center_sk = cc_call_center_sk
+             and cc_county in ('Williamson County','Williamson County','Williamson County','Williamson County', 'Williamson County') 
+             and exists (select *
+                        from catalog_sales cs2
+                        where cs1.cs_order_number = cs2.cs_order_number
+                          and cs1.cs_warehouse_sk <> cs2.cs_warehouse_sk)
+             and not exists(select *
+                           from catalog_returns cr1
+                           where cs1.cs_order_number = cr1.cr_order_number)
+             order by count(distinct cs_order_number)
+             limit 100;
 -- end query 1 in stream 0 using template query16.tpl
 -- start query 1 in stream 0 using template query17.tpl
  select i_item_id
@@ -1338,21 +1338,19 @@ select i_item_desc
              order by ss1.ca_county;
 -- end query 1 in stream 0 using template query31.tpl
 -- start query 1 in stream 0 using template query32.tpl
---- select sum(cs_ext_discount_amt) as `excess discount amount`
----             from
----                catalog_sales, item, date_dim
----             where
----               i_manufact_id = 977
----               and i_item_sk = cs_item_sk
----               and d_date between '2000-01-27' and (cast('2000-01-27' as date) + 90 days)
----               and d_date_sk = cs_sold_date_sk
----               and cs_ext_discount_amt > (
----                      select 1.3 * avg(cs_ext_discount_amt)
----                      from catalog_sales, date_dim
----                      where cs_item_sk = i_item_sk
----                       and d_date between '2000-01-27]' and (cast('2000-01-27' as date) + 90 days)
----                       and d_date_sk = cs_sold_date_sk)
----            limit 100;
+ select sum(cs_ext_discount_amt) as `excess discount amount` from catalog_sales, item, date_dim
+             where
+               i_manufact_id = 977
+               and i_item_sk = cs_item_sk
+               and d_date between '2000-01-27' and (cast('2000-01-27' as date) + interval 90 days)
+               and d_date_sk = cs_sold_date_sk
+               and cs_ext_discount_amt > (
+                      select 1.3 * avg(cs_ext_discount_amt)
+                      from catalog_sales, date_dim
+                      where cs_item_sk = i_item_sk
+                       and d_date between '2000-01-27]' and (cast('2000-01-27' as date) + interval 90 days)
+                       and d_date_sk = cs_sold_date_sk)
+            limit 100;
 -- end query 1 in stream 0 using template query32.tpl
 -- start query 1 in stream 0 using template query33.tpl
  with ss as (
@@ -1612,55 +1610,55 @@ select i_item_desc
              limit 100;
 -- end query 1 in stream 0 using template query40.tpl
 -- start query 1 in stream 0 using template query41.tpl
---- select distinct(i_product_name)
----             from item i1
----             where i_manufact_id between 738 and 738+40
----               and (select count(*) as item_cnt
----                    from item
----                    where (i_manufact = i1.i_manufact and
----                    ((i_category = 'Women' and 
----                    (i_color = 'powder' or i_color = 'khaki') and
----                    (i_units = 'Ounce' or i_units = 'Oz') and
----                    (i_size = 'medium' or i_size = 'extra large')
----                    ) or
----                    (i_category = 'Women' and
----                    (i_color = 'brown' or i_color = 'honeydew') and
----                    (i_units = 'Bunch' or i_units = 'Ton') and
----                    (i_size = 'N/A' or i_size = 'small')
----                    ) or
----                    (i_category = 'Men' and
----                    (i_color = 'floral' or i_color = 'deep') and
----                    (i_units = 'N/A' or i_units = 'Dozen') and
----                    (i_size = 'petite' or i_size = 'large')
----                    ) or
----                    (i_category = 'Men' and
----                    (i_color = 'light' or i_color = 'cornflower') and
----                    (i_units = 'Box' or i_units = 'Pound') and
----                    (i_size = 'medium' or i_size = 'extra large')
----                    ))
----                    or
----                    ((i_category = 'Women' and 
----                    (i_color = 'midnight' or i_color = 'snow') and
----                    (i_units = 'Pallet' or i_units = 'Gross') and
----                    (i_size = 'medium' or i_size = 'extra large')
----                    ) or
----                    (i_category = 'Women' and
----                    (i_color = 'cyan' or i_color = 'papaya') and
----                    (i_units = 'Cup' or i_units = 'Dram') and
----                    (i_size = 'N/A' or i_size = 'small')
----                    ) or
----                    (i_category = 'Men' and
----                    (i_color = 'orange' or i_color = 'frosted') and
----                    (i_units = 'Each' or i_units = 'Tbl') and
----                    (i_size = 'petite' or i_size = 'large')
----                    ) or
----                    (i_category = 'Men' and
----                    (i_color = 'forest' or i_color = 'ghost') and
----                    (i_units = 'Lb' or i_units = 'Bundle') and
----                    (i_size = 'medium' or i_size = 'extra large')
----                    )))) > 0
----             order by i_product_name
----             limit 100;
+select distinct(i_product_name)
+	 from item i1
+	 where i_manufact_id between 738 and 738+40
+	   and (select count(*) as item_cnt
+		from item
+		where (i_manufact = i1.i_manufact and
+		((i_category = 'Women' and 
+		(i_color = 'powder' or i_color = 'khaki') and
+		(i_units = 'Ounce' or i_units = 'Oz') and
+		(i_size = 'medium' or i_size = 'extra large')
+		) or
+		(i_category = 'Women' and
+		(i_color = 'brown' or i_color = 'honeydew') and
+		(i_units = 'Bunch' or i_units = 'Ton') and
+		(i_size = 'N/A' or i_size = 'small')
+		) or
+		(i_category = 'Men' and
+		(i_color = 'floral' or i_color = 'deep') and
+		(i_units = 'N/A' or i_units = 'Dozen') and
+		(i_size = 'petite' or i_size = 'large')
+		) or
+		(i_category = 'Men' and
+		(i_color = 'light' or i_color = 'cornflower') and
+		(i_units = 'Box' or i_units = 'Pound') and
+		(i_size = 'medium' or i_size = 'extra large')
+		))) or
+	       (i_manufact = i1.i_manufact and
+		((i_category = 'Women' and 
+		(i_color = 'midnight' or i_color = 'snow') and
+		(i_units = 'Pallet' or i_units = 'Gross') and
+		(i_size = 'medium' or i_size = 'extra large')
+		) or
+		(i_category = 'Women' and
+		(i_color = 'cyan' or i_color = 'papaya') and
+		(i_units = 'Cup' or i_units = 'Dram') and
+		(i_size = 'N/A' or i_size = 'small')
+		) or
+		(i_category = 'Men' and
+		(i_color = 'orange' or i_color = 'frosted') and
+		(i_units = 'Each' or i_units = 'Tbl') and
+		(i_size = 'petite' or i_size = 'large')
+		) or
+		(i_category = 'Men' and
+		(i_color = 'forest' or i_color = 'ghost') and
+		(i_units = 'Lb' or i_units = 'Bundle') and
+		(i_size = 'medium' or i_size = 'extra large')
+		)))) > 0
+	 order by i_product_name
+	 limit 100;
 -- end query 1 in stream 0 using template query41.tpl
 -- start query 1 in stream 0 using template query42.tpl
 select
@@ -3808,23 +3806,23 @@ with ws as
              order by sum(cr_net_loss) desc;
 -- end query 1 in stream 0 using template query91.tpl
 -- start query 1 in stream 0 using template query92.tpl
---- select sum(ws_ext_discount_amt) as `Excess Discount Amount"
----             from web_sales, item, date_dim
----             where i_manufact_id = 350
----             and i_item_sk = ws_item_sk
----             and d_date between '2000-01-27' and date_add(cast('2000-01-27' as date), 90)
----             and d_date_sk = ws_sold_date_sk
----             and ws_ext_discount_amt >
----                 (
----                   SELECT 1.3 * avg(ws_ext_discount_amt)
----                   FROM web_sales, date_dim
----                   WHERE ws_item_sk = i_item_sk
----                     and d_date between '2000-01-27' and date_add(cast('2000-01-27' as date), 90)
----                     and d_date_sk = ws_sold_date_sk
----                 )
----             order by sum(ws_ext_discount_amt)
----             limit 100;
------ end query 1 in stream 0 using template query92.tpl
+ select sum(ws_ext_discount_amt) as `Excess Discount Amount`
+             from web_sales, item, date_dim
+             where i_manufact_id = 350
+             and i_item_sk = ws_item_sk
+             and d_date between '2000-01-27' and date_add(cast('2000-01-27' as date), interval 90 days)
+             and d_date_sk = ws_sold_date_sk
+             and ws_ext_discount_amt >
+                 (
+                   SELECT 1.3 * avg(ws_ext_discount_amt)
+                   FROM web_sales, date_dim
+                   WHERE ws_item_sk = i_item_sk
+                     and d_date between '2000-01-27' and date_add(cast('2000-01-27' as date), interval 90 days)
+                     and d_date_sk = ws_sold_date_sk
+                 )
+             order by sum(ws_ext_discount_amt)
+             limit 100;
+-- end query 1 in stream 0 using template query92.tpl
 -- start query 1 in stream 0 using template query93.tpl
  select ss_customer_sk, sum(act_sales) sumsales
              from (select
@@ -3866,32 +3864,32 @@ with ws as
              limit 100;
 -- end query 1 in stream 0 using template query94.tpl
 -- start query 1 in stream 0 using template query95.tpl
---- with ws_wh as
----             (select ws1.ws_order_number,ws1.ws_warehouse_sk wh1,ws2.ws_warehouse_sk wh2
----              from web_sales ws1,web_sales ws2
----              where ws1.ws_order_number = ws2.ws_order_number
----                and ws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
----             select
----                count(distinct ws_order_number) as `order count"
----               ,sum(ws_ext_ship_cost) as `total shipping cost"
----               ,sum(ws_net_profit) as `total net profit"
----             from
----                web_sales ws1, date_dim, customer_address, web_site
----             where
----                 d_date between '1999-02-01' and
----                        date_add(cast('1999-02-01' as date), 60)
----             and ws1.ws_ship_date_sk = d_date_sk
----             and ws1.ws_ship_addr_sk = ca_address_sk
----             and ca_state = 'IL'
----             and ws1.ws_web_site_sk = web_site_sk
----             and web_company_name = 'pri'
----             and ws1.ws_order_number in (select ws_order_number
----                                         from ws_wh)
----             and ws1.ws_order_number in (select wr_order_number
----                                         from web_returns,ws_wh
----                                         where wr_order_number = ws_wh.ws_order_number)
----             order by count(distinct ws_order_number)
----             limit 100;
+ with ws_wh as
+             (select ws1.ws_order_number,ws1.ws_warehouse_sk wh1,ws2.ws_warehouse_sk wh2
+              from web_sales ws1,web_sales ws2
+              where ws1.ws_order_number = ws2.ws_order_number
+                and ws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
+             select
+                count(distinct ws_order_number) as `order count`
+               ,sum(ws_ext_ship_cost) as `total shipping cost`
+               ,sum(ws_net_profit) as `total net profit`
+             from
+                web_sales ws1, date_dim, customer_address, web_site
+             where
+                 d_date between '1999-02-01' and
+                        date_add(cast('1999-02-01' as date), interval 60 days)
+             and ws1.ws_ship_date_sk = d_date_sk
+             and ws1.ws_ship_addr_sk = ca_address_sk
+             and ca_state = 'IL'
+             and ws1.ws_web_site_sk = web_site_sk
+             and web_company_name = 'pri'
+             and ws1.ws_order_number in (select ws_order_number
+                                         from ws_wh)
+             and ws1.ws_order_number in (select wr_order_number
+                                         from web_returns,ws_wh
+                                         where wr_order_number = ws_wh.ws_order_number)
+             order by count(distinct ws_order_number)
+             limit 100;
 -- end query 1 in stream 0 using template query95.tpl
 -- start query 1 in stream 0 using template query96.tpl
  select count(*)
