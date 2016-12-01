@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ $# -le 4 ||  $# -ge 7 ]]; then
-    echo "Usage: $0 <query name> <num-executors> <executor-cores> <executor-memory> <db_name> -o"
+if [[ $# -le 5 ||  $# -ge 8 ]]; then
+    echo "Usage: $0 <query names comma sep> <iterations> <num-executors> <executor-cores> <executor-memory> <db_name> -o"
     exit
 fi
 
@@ -16,11 +16,12 @@ fi
 . ${RUNCONF}
 
 query_name=$1
-num_executors=$2
-executor_cores=$3
-executor_memory=$4
-databaseName=$5
-enableOperf=$6
+iteration=$2
+num_executors=$3
+executor_cores=$4
+executor_memory=$5
+databaseName=$6
+enableOperf=$7
 
 executor_memoryOverhead=$EXEC_MEM_OVERHEAD
 sql_shuffle_partitions=$SHUFFLE_PARTITIONS
@@ -61,6 +62,14 @@ else
 	extraOptions=""
 fi
 
+if [[ $query_name == *".run" ]]
+then
+  query_list=`sed ':a;N;$!ba;s/\n/,/g' ${query_name}`
+  queryinput="-f ${query_list}"
+else
+  queryinput="-f ${query_name}"
+fi
+
 echo "Execution logs will be placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup " 
 
 # /usr/bin/time -v ${SPARK_HOME}/bin/spark-sql --master yarn-client --conf spark.kryo.referenceTracking=true --conf spark.shuffle.io.numConnectionsPerPeer=4 --conf spark.reducer.maxSizeInFlight=128m --conf spark.executor.extraJavaOptions="-Diop.version=4.1.0.0 -XX:ParallelGCThreads=${gcThreads} -XX:+AlwaysTenure" --conf spark.sql.shuffle.partitions=${sql_shuffle_partitions} --conf spark.yarn.driver.memoryOverhead=400 --conf spark.yarn.executor.memoryOverhead=${executor_memoryOverhead} --conf spark.shuffle.consolidateFiles=true --conf spark.reducer.maxSizeInFlight=128m --conf spark.sql.autoBroadcastJoinThreshold=67108864 --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --name ${query_name} --database ${databaseName} --driver-memory 12g --driver-cores 16 --num-executors ${num_executors} --executor-cores ${executor_cores} --executor-memory ${executor_memory} -f ${QUERIES_DIR}/${query_name}.sql > ${LOG_DIR}/${PREFIX}_${SEQ}.nohup 2>&1
@@ -89,8 +98,9 @@ ${SPARK_HOME}/bin/spark-submit                                                  
     --executor-memory ${executor_memory}                                                                                    \
     --verbose                                                                                                               \
     ${SQLPERF_JAR}                                                                                                          \
-    -b com.databricks.spark.sql.perf.tpcds.TPCDS -f ${query_name} -d ${databaseName} 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
-#    /home/testuser/tpcds-setup/tpcdeps/spark-sql-perf/target/scala-2.11/spark-sql-perf-assembly-0.4.11-SNAPSHOT.jar        \
+    -b com.databricks.spark.sql.perf.tpcds.TPCDS -i ${iteration}                                                            \
+    ${queryinput}                                                                                                           \
+    -d ${databaseName} 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
             
 echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup " 
 
