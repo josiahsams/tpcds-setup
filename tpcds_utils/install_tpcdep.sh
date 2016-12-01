@@ -26,11 +26,11 @@ fi
 # As the install steps involve accessing multiple Secure Sites, lets ensure the CA certificates are in place.
 AN "sudo update-ca-certificates -f >/dev/null 2>&1"
 
-SQLPERF_JAR=${DEPSDIR}/spark-sql-perf/target/scala-2.10/spark-sql-perf*.jar
+SQLPERF_JAR=${DEPSDIR}/spark-sql-perf/target/scala-2.11/spark-sql-perf*.jar
 if ! ls ${SQLPERF_JAR} 1> /dev/null 2>&1; then
    cd ${DEPSDIR}/spark-sql-perf
    export DBC_USERNAME=`whoami`
-   ./build/sbt clean package >> ${DEPSLOGS}  2>&1
+   ./build/sbt clean assembly >> ${DEPSLOGS}  2>&1
    if [[ $? -ne 0 ]]; then
    	echo "spark-sql-perf compilation failed"
    	exit

@@ -88,8 +88,9 @@ ${SPARK_HOME}/bin/spark-submit                                                  
     --executor-cores ${executor_cores}                                                                                      \
     --executor-memory ${executor_memory}                                                                                    \
     --verbose                                                                                                               \
-    /home/testuser/tpcds-setup/tpcdeps/spark-sql-perf/target/scala-2.11/spark-sql-perf-assembly-0.4.11-SNAPSHOT.jar        \
+    ${SQLPERF_JAR}                                                                                                          \
     -b com.databricks.spark.sql.perf.tpcds.TPCDS -f ${query_name} -d ${databaseName} 2>&1 | tee ${LOG_DIR}/${PREFIX}_${SEQ}.nohup
+#    /home/testuser/tpcds-setup/tpcdeps/spark-sql-perf/target/scala-2.11/spark-sql-perf-assembly-0.4.11-SNAPSHOT.jar        \
             
 echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup " 
 
