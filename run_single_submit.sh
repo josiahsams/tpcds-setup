@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# -le 5 ||  $# -ge 8 ]]; then
-    echo "Usage: $0 <query names comma sep> <iterations> <num-executors> <executor-cores> <executor-memory> <db_name> -o"
+    echo "Usage: $0 <query names comma sep> <iterations> <num-executors> <executor-cores> <executor-memory> <db_name> -o|-n|-no"
     exit
 fi
 
@@ -36,10 +36,13 @@ SEQ=$CNT
 
 cat ${HADOOP_HOME}/etc/hadoop/slaves | grep -v ^# | xargs -i ssh {} "sync && echo 3 | sudo tee /proc/sys/vm/drop_caches"
 
-# CUR_NMON_DIR=${NMON_DIR}/${PREFIX}_${SEQ}_nmon_logs
-# startnmon.sh $CUR_NMON_DIR
+if [[ $enableOperf == *"n"* ]]; then
+	CUR_NMON_DIR=${LOG_DIR}/${PREFIX}_${SEQ}_nmon_logs
+	echo "Starting nmon and logs will be placed under ${CUR_NMON_DIR}"
+	startnmon.sh $CUR_NMON_DIR
+fi
 
-if [[ $enableOperf == "-o" ]]; then
+if [[ $enableOperf == *"o"* ]]; then
 	type operf >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
 		echo "operf is not installed. Exiting."
@@ -104,9 +107,11 @@ ${SPARK_HOME}/bin/spark-submit                                                  
             
 echo "Execution logs are placed under : ${LOG_DIR}${PREFIX}_${SEQ}.nohup " 
 
-# stopnmon.sh $CUR_NMON_DIR
+if [[ $enableOperf == *"n"* ]]; then
+   stopnmon.sh $CUR_NMON_DIR
+fi
 
-if [[ $enableOperf == "-o" ]]; then
+if [[ $enableOperf == *"o"* ]]; then
   oprofile_stop.sh
 fi
 
