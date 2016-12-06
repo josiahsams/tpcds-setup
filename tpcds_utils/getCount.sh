@@ -16,7 +16,7 @@ for i in `ls -lt ${LOG_DIR}/*.nohup | head -9 | awk '{ print \$9}' `
 do
 	getTime=`ls -lt $i | awk '{ print \$8}'`
 	echo -e  "Parsing file : $i : ($getTime) : \c"
-	awk 'c&&!--c;/minTimeMs/{c=2}' $i | awk -F'|' '{print $6}'
+	awk 'c&&!--c;/minTimeMs/{c=2}' $i | awk -F'|' '{gsub(/ /, "", $7); print $5,"(",$7,")"}'
 done
 
 
