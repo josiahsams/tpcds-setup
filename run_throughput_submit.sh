@@ -72,8 +72,7 @@ sed "s~SRCPATH~${DIR}~g; s~HOST~${HOST}~g; s~USER~${USER}~g; s~PASSWD~${PASSWD}~
 
 /usr/bin/time  ${JMETER_BIN} -n -t ${JMX_IN_USE} -l ${LOG_DIR}/run1.jtl -j ${LOG_DIR}/run1.log
 
-# rm $JMX_IN_USE
-echo $JMX_IN_USE
+rm $JMX_IN_USE
 
 if [[ $enableOperf == *"n"* ]]; then
    stopnmon.sh $CUR_NMON_DIR
