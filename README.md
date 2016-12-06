@@ -101,5 +101,17 @@ GC_THREADS=9
       - Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
       - input parameters like cores, memory & executor instances are applied to individual threads and not for the whole application.
 
+    c. To collect performance data along with TPC runs, kindly go through the initial setup after cloning this repo: https://github.com/josiahsams/perftools-setup and then execute the above scripts with additional options as follows,
+    
+    ```
+    # To collect nmon data with a run
+    run_single.sh q1 2 8 18 23g tpcds1g1 -n
+    
+    # To collect operf data with a run
+    run_single.sh q1,q19 2 8 18 23g tpcds1g1 -o
+    
+    # To collect PID monitor data for a run
+    pmon run_single.sh q1,q19 2 8 18 23g tpcds1g1
+    ```
 
 
