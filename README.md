@@ -72,23 +72,34 @@ GC_THREADS=9
 
 6. There are 2 types of tpcds benchmark script provided,
    
-    a. To run one sql query at a time and to get the execution time invoke `run_single.sh` script as follows,
+    a. To run individual sql queries and to get the execution time invoke `run_single.sh` script as follows,
     
-  ```
-  run_single.sh q19 15 30 30g tpcds5G
+  ``` 
+  run_single.sh q1,q19 2 8 18 23g tpcds1g1
+  (or)
+  run_single.sh queries.run 2 8 18 23g tpcds1g1
+  
+  cat queries.run
+  q19
+  q73
+  q93
   ```
 
-      Note: Here we run the sql query found under `${WORKDIR}/tpcds_queries/q19.sql` with other parameters.
+      Note: 
+      - Multiple queries can be provided in a comma separated format or in a file. 
+      - Queries can be made to run in an iterative mode
    
     b. run throughput test by invoking jmeter inside the script,
     
     Before running it, make sure to set `HOST`, `USER`  & `PASSWD` so that jmeter uses it to spawn multiple workloads.
     
   ```   
-  run_throughput_with_jmeter_nm.sh tpcds5G 200
+  run_throughput.sh 1 15 18g tpcds100g 200
   ```
 
-      Note: Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
+      Note: 
+      - Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
+      - input parameters like cores, memory & executor instances are applied to individual threads and not for the whole application.
 
 
 
