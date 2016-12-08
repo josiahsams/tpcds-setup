@@ -22,7 +22,7 @@ if [ $? -eq 0 ]; then
    echo "Activated $cpucount cores successfully"
 else
    echo "Error activating $cpucount cores"
-   eixt 1
+   exit 1
 fi
 
 activevcpus=`lscpu | grep "On-line CPU" | awk '{print $4}'`

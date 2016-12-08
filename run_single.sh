@@ -24,7 +24,8 @@ databaseName=$6
 enableOperf=$7
 
 executor_memoryOverhead=$EXEC_MEM_OVERHEAD
-sql_shuffle_partitions=$SHUFFLE_PARTITIONS
+sql_shuffle_partitions=${SHPART:-$SHUFFLE_PARTITIONS}
+echo "sql_shuffle_partitions is set to ${sql_shuffle_partitions}"
 gcThreads=$GC_THREADS
 
 
