@@ -21,13 +21,12 @@
 
   ```bash
   git clone https://github.com/josiahsams/tpcds-setup
-  #Add PATH and WORKDIR in .bashrc
-  export WORKDIR=${HOME}
-  export PATH=$PATH:${WORKDIR}/tpcds-setup:${WORKDIR}/tpcds-setup/tpcds_utils
-  . ~/.bashrc  
+  
+  cd tpcds-setup
   
   # Install the TPC-DS Dependencies
-  install_tpcdep.sh
+  ./setup.sh
+  source ~/.bashrc  
   ```
   
   Note: install_tpcdep.sh will take care of the following
@@ -64,8 +63,8 @@ GC_THREADS=9
     
     eg:-
     
-    # genData.sh hdfs://n001/tpcds-5GB 5
-    # createDB.sh hdfs://n001/tpcds-5GB 5 tpcds5G
+    # genData.sh hdfs://n001:9000/tpcds-5GB 5
+    # createDB.sh hdfs://n001:9000/tpcds-5GB 5 tpcds5G
   ```
   
     Note: Don't leave any hyphen/special characters for db_name.
