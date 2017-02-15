@@ -37,7 +37,7 @@
   - Download, install and config mysql
   - Config spark hivecontext to use mysql as DB to store metastore
   
-2. Check the following variables in `${WORKDIR}/tpcds-setup/tpcds_conf/run.config` file before running tpcds benchmark scripts,
+2. Check the following variables in `${WORKDIR}/tpcds-setup/conf/run.config` file before running tpcds benchmark scripts,
 
 ```
 # Runtime config paramters
@@ -97,7 +97,7 @@ GC_THREADS=9
   ```
 
       Note: 
-      - Running this script will invoke all the 9 sql queries found under `${WORKDIR}/tpcds_queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
+      - Running this script will invoke all the 9 sql queries found under `${WORKDIR}/queries/*.scala` in parallel using `jmeter` for the specified timeout period. 
       - input parameters like cores, memory & executor instances are applied to individual threads and not for the whole application.
 
     c. To collect performance data along with TPC runs, kindly go through the initial setup after cloning this repo: https://github.com/josiahsams/perftools-setup and then execute the above scripts with additional options as follows,
