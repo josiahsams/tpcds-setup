@@ -2,7 +2,7 @@
 
 ${WORKDIR?"Need to set WORKDIR env"} 2>/dev/null
 
-RUNCONF=${WORKDIR}/tpcds-setup/tpcds_conf/run.config
+RUNCONF=${WORKDIR}/tpcds-setup/conf/run.config
 
 if [ ! -f ${RUNCONF} ]; then
     echo "File : ${RUNCONF} not found!"
@@ -19,7 +19,7 @@ fi
 hdfs_path=$1
 size_in_gb=$2
 
-SCRIPT=${REPO_DIR}/tpcds_utils/genData.scala
+SCRIPT=${REPO_DIR}/utils/genData.scala
 SCRIPT_TO_EXECUTE=${LOG_DIR}/genData.scala.$$
 
 sed "s~KIT_PATH =.*~KIT_PATH = \"${KIT_PATH}\"~g; s~HDFS_PATH =.*~HDFS_PATH = \"${hdfs_path}\"~g; s~SIZE_IN_GB =.*~SIZE_IN_GB = ${size_in_gb}~g" ${SCRIPT} > ${SCRIPT_TO_EXECUTE}

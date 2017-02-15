@@ -7,7 +7,7 @@ type CP >/dev/null 2>&1 || { echo >&2 "Require CP script to be in path. Aborting
 
 REPO_DIR=${WORKDIR}/tpcds-setup
 DEPSDIR=${REPO_DIR}/tpcdeps
-UTILS_DIR=${REPO_DIR}/tpcds_utils/
+UTILS_DIR=${REPO_DIR}/utils/
 
 mkdir -p ${DEPSDIR}
 

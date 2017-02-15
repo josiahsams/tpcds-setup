@@ -7,7 +7,7 @@ fi
 
 ${WORKDIR?"Need to set WORKDIR env"} 2>/dev/null
 
-RUNCONF=${WORKDIR}/tpcds-setup/tpcds_conf/run.config
+RUNCONF=${WORKDIR}/tpcds-setup/conf/run.config
 
 if [ ! -f ${RUNCONF} ]; then
     echo "File : ${RUNCONF} not found!"
@@ -65,8 +65,8 @@ if [[ $enableOperf == *"o"* ]]; then
 fi
 
 
-JMX=${WORKDIR}/tpcds-setup/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx
-JMX_IN_USE=${WORKDIR}/tpcds-setup/tpcds_conf/baidu-tpcds-yarn-throughput-allcores.jmx.$$
+JMX=${WORKDIR}/tpcds-setup/conf/baidu-tpcds-yarn-throughput-allcores.jmx
+JMX_IN_USE=${WORKDIR}/tpcds-setup/conf/baidu-tpcds-yarn-throughput-allcores.jmx.$$
 
 sed "s~SRCPATH~${DIR}~g; s~HOST~${HOST}~g; s~USER~${USER}~g; s~PASSWD~${PASSWD}~g; s~DBNAME~${databaseName}~g; s~TIMEOUT~${timeout}~g; s~EXEC~${num_executors}~g; s~CORES~${executor_cores}~g; s~MEMORY~${executor_memory}~g; s~EXTRA~${enableOperf}~g; " $JMX > $JMX_IN_USE
 
