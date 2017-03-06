@@ -19,9 +19,10 @@ if [[ $# -le 4 || $# -ge 7 ]]; then
 |RDD: back-to-back maps   |
 |RDD: range               |
 +-------------------------+
-Some examples: ./run_ds_perf.sh 12 1 2g 2g 10
-Some examples: ./run_ds_perf.sh 12 1 2g 2g 10 DF - runs all queries in DF (Dataframe benchmarks)
-Some examples: ./run_ds_perf.sh 12 1 2g 2g 10 filters - runs all filters 
+Some examples: 
+./run_ds_perf.sh 12 1 2g 2g 10 # runs all queries
+./run_ds_perf.sh 12 1 2g 2g 10 DF # runs all queries in DF (Dataframe benchmarks)
+./run_ds_perf.sh 12 1 2g 2g 10 filters # runs all filters 
 " 
     exit
 fi

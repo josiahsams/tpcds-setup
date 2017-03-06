@@ -113,4 +113,33 @@ GC_THREADS=9
     pmon run_single.sh q1,q19 2 8 18 23g tpcds1g1
     ```
 
+###Steps to run the DatasetPerformance benchmark
+The DatasetPerformance benchmark runs different operations on the three spark apis namely DataFrame(DF), DataSet(DS) and Resilient Distributed Dataset (RDD). There is a script which helps to run the different workloads.
 
+Following is a list of queries that are there
+
+```
++-------------------------+
+|name                     |
++-------------------------+
+|DF: average              |
+|DF: back-to-back filters |
+|DF: back-to-back maps    |
+|DF: range                |
+|DS: average              |
+|DS: back-to-back filters |
+|DS: back-to-back maps    |
+|DS: range                |
+|RDD: average             |
+|RDD: back-to-back filters|
+|RDD: back-to-back maps   |
+|RDD: range               |
++-------------------------+
+```
+
+Some examples of how to use the script.
+```
+ ./run_ds_perf.sh 12 1 2g 2g 10 # runs all queries
+ ./run_ds_perf.sh 12 1 2g 2g 10 DF # runs all queries in DF (Dataframe benchmarks)
+ ./run_ds_perf.sh 12 1 2g 2g 10 filters # runs all filters
+```
