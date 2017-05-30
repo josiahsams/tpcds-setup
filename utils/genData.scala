@@ -6,6 +6,10 @@ val SIZE_IN_GB = 1024
 
 val KIT_PATH = "/home/baidu/tpcds-kit/tools"
 
+// For spark >= 2.0, comment the following 2 lines.
+// import org.apache.spark.sql.hive.HiveContext
+// val sqlContext = new HiveContext(sc)
+
 // For spark 1.6, comment the following line.
 val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 
