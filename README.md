@@ -1,6 +1,6 @@
 # tpcds-setup
 
-###Requirements:
+### Requirements:
 
 1. Spark 1.6.1 should be installed and SPARK_HOME should be set in the environment variable.
 2. HADOOP YARN Setup should be completed and HADOOP_HOME should be set in the environment variable.
@@ -14,7 +14,7 @@
 %sudo   ALL=(ALL:ALL) NOPASSWD:ALL
 ```
 	
-###Steps to run TPC-DS Benchmark:
+### Steps to run TPC-DS Benchmark:
 
 1. Clone this repository and follow the steps before proceeding.
     Note: `WORKDIR` is where you will be running the scripts and all the log files and configuration files will be placed. All the provided scripts expect WORKDIR to be made part of ~/.bashrc. 
@@ -113,7 +113,7 @@ GC_THREADS=9
     pmon run_single.sh q1,q19 2 8 18 23g tpcds1g1
     ```
 
-###Steps to run the DatasetPerformance benchmark
+### Steps to run the DatasetPerformance benchmark
 The DatasetPerformance benchmark runs different operations on the three spark apis namely DataFrame(DF), DataSet(DS) and Resilient Distributed Dataset (RDD). There is a script which helps to run the different workloads.
 
 Following is a list of queries that are there
