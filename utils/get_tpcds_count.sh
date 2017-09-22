@@ -15,8 +15,8 @@ done
 if [ $# -ne 1 ]
 then
 
-echo "USAGE - ./tpcds_count.sh dbname"
-echo "e.g. - ./tpcds_count.sh tpcds2tb"
+echo "USAGE - ./get_tpcds_count.sh dbname"
+echo "e.g. - ./get_tpcds_count.sh tpcds2tb"
 exit
 fi
 
