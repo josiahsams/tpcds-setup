@@ -70,13 +70,14 @@ GC_THREADS=9
     Note: Don't leave any hyphen/special characters for db_name.
 	
 4. To verify the TPCDS database creation and row count of tables with expected standard counts for DB. Use the script provided in the utils directory.
-    It can be used if you have chosen DB size - 1GB/1TB/2TB/3TB/10TB/30TB/100TB.
+    It can be used if you have chosen DB size - 1GB/10GB/100GB/200GB/1TB/2TB/3TB/10TB/30TB/100TB.
   
   ```
-   get_tpcds_count.sh <db_name>
+   get_tpcds_count.sh <dbsize> <db_name>
    
    e.g. :-
-   #get_tpcds_count.sh tpcds1t
+   # get_tpcds_count.sh 1tb tpcds1t
+   
   ```
 	
 5. There are 2 types of tpcds benchmark script provided,
